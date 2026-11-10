@@ -1,0 +1,16 @@
+node_modules/
+dist/
+test-results/
+.env
+.env.*
+*.log
+*.tmp
+*.swp
+*~
+.cache/
+.vite/
+coverage/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
