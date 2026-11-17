@@ -1,6 +1,9 @@
 # Demonstration and verification checklist
 
-Start the app and open Software Engineering as Student. Reset demo data before a repeat demonstration. Use the links in [UI mapping](ui-mapping.md) for the captured report figures.
+Archived manual acceptance walkthrough and historical test results. For current setup and
+test commands, use the [root README](../../../README.md). Start the app and open Software
+Engineering as Student; reset demo data before repeating the steps. The [UI mapping](ui-mapping.md)
+preserves the workflow references. Report captures were removed as described in the [archive index](README.md).
 
 ## UC-01 · Upload lecture material
 
@@ -42,7 +45,7 @@ Start the app and open Software Engineering as Student. Reset demo data before a
 2. As Student, visit `/c/se/results/r-peer` for another student’s private result. Expect denial. Follow the dashboard link and reopen the current student’s own result.
 3. Visit every role-specific navigation item. Refresh on a newly saved result. Reset once with Cancel, then confirm a reset. Expect the original fixtures, Software Engineering course and default student, including after reload.
 
-## Executed checks
+## Historical executed checks
 
 | Check | Observed result |
 |---|---|
@@ -50,6 +53,6 @@ Start the app and open Software Engineering as Student. Reset demo data before a
 | Mock services | Seven Node tests passed. They cover all supported extensions, processing, retry without empty records, two topic banks, grade-once behavior, immutable originals, calendar validation, day 0/7/8, role/course/ownership checks, reload and reset. |
 | Browser workflows | The complete Playwright walkthrough passed in headless Microsoft Edge against the production bundle. It exercised all eight screens, both roles, US-07, all five critical workflows, and the alternative flows listed above. The final run reported zero uncaught page errors. |
 | Keyboard and layout | The walkthrough used Tab, Shift+Tab, Enter and Space for upload, generation, answering and submission. Playwright supplied the chosen file when the native chooser opened. Validation moved focus to the first unanswered question. The dashboard had no horizontal overflow at 390 px. |
-| Persistence and screenshots | Reload preserved the partial draft, saved result and published deadline. Cancel preserved demo changes and confirmed reset restored seeds. The browser run produced eleven labeled-state PNGs in `docs/screens/`. |
+| Persistence and screenshots | Reload preserved the partial draft, saved result and published deadline. Cancel preserved demo changes and confirmed reset restored seeds. That historical run produced eleven report PNGs, since removed from the active tree. Current browser tests write to ignored `test-results/screens/`. |
 
 Native operating-system file-dialog interaction, other browsers, a comprehensive assistive-technology audit, production load tests, real service/network recovery and the five-user usability study remain outside these executed checks.

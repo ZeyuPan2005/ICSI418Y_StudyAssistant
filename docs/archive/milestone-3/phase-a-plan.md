@@ -1,5 +1,9 @@
 # Study Assistant UI prototype plan
 
+> Archived from the completed Milestone 3 prototype. Folder layouts and approval steps
+> below describe that historical plan. See the [current README](../../../README.md)
+> and [design assumptions](../../design-assumptions.md) for present development context.
+
 Team 01 · ICSI 418Y · Milestone 3 Part 4 · Phase A approved with refinements
 
 The student demonstration follows a lecture from upload through quiz, feedback and targeted practice. The deadline demonstration follows one item from the teacher’s form to the student’s dashboard, including what the student sees after the teacher changes its date.
