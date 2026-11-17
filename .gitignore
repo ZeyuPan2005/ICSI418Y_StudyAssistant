@@ -3,6 +3,7 @@ dist/
 test-results/
 .env
 .env.*
+!.env.example
 *.log
 *.tmp
 *.swp
@@ -14,3 +15,21 @@ coverage/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Python and local Python IDE state
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.spyproject/
+
+# Confirmed AutoNote local inputs and generated outputs (relative to its cwd)
+/AutoNote/files/*.txt
+/AutoNote/files/*_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*.md
+/AutoNote/files/*_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*.json
+/AutoNote/transcription.txt
+/AutoNote/cov_audio.m4a
+/AutoNote/test_video.mp4

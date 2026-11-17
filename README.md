@@ -63,3 +63,12 @@ npm run test:browser
 ## Future backend integration
 
 Replace the mock service operations with Express endpoints for materials, quizzes, attempts, results and deadlines. Resolve the actor and course permissions on the server. MongoDB can persist the relationships represented by the local records. A processing worker would store the upload, extract usable lecture content and dispatch a generation service. Keep stable quiz IDs, original-result references and immutable grading snapshots when replacing the fixtures. Verify the Milestone 2 performance, usability, privacy and connection-recovery requirements against the deployed system.
+
+## Legacy AutoNote import
+
+`AutoNote/` preserves a legacy Python project for evaluating reusable audio transcription,
+lecture-note generation and knowledge-network components. It is not integrated into Study
+Assistant; the Milestone 3 React/Vite prototype continues to use mock services. Historical
+implementations are retained for review, and runtime functionality has not been verified.
+See [the import review](docs/AUTONOTE_IMPORT_REVIEW.md) for module relationships, security
+remediation, environment limitations and proposed next steps before any integration.
