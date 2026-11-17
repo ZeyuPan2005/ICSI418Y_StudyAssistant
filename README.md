@@ -51,6 +51,9 @@ fictional fixtures. Deterministic failure controls remain available for developm
 | `tests/browser.mjs` | Playwright workflow, navigation, persistence and keyboard checks |
 | `index.html`, `vite.config.js`, `package.json`, `package-lock.json` | Frontend entry, build configuration and locked dependencies |
 | `AutoNote/` | Preserved legacy Python code for later AI/backend evaluation; outside the frontend runtime |
+| [Requirements baseline](docs/REQUIREMENTS_BASELINE.md) | Approved Working Baseline v1.0, original authority, phased scope and acceptance criteria |
+| [Requirements traceability](docs/REQUIREMENTS_TRACEABILITY.md) | Original UC/US/NFR identifiers mapped to Phase 1 requirements, existing screens and proposed tests |
+| [Architecture plan](docs/ARCHITECTURE_PLAN.md) | Preliminary modular monolith direction, AD-01 through AD-04 and unresolved design questions |
 | [Design assumptions](docs/design-assumptions.md) | Existing requirement decisions and prototype conventions |
 | [AutoNote import review](docs/AUTONOTE_IMPORT_REVIEW.md) | Legacy module relationships, security findings and known limitations |
 | [Historical archive](docs/archive/milestone-3/README.md) | Prior planning, UI-to-requirement mapping and manual acceptance walkthrough |
@@ -121,16 +124,19 @@ The frontend setup above does not install or execute AutoNote.
 
 ## Planned full-stack development
 
-The current direction is an Express API for materials, quizzes, attempts, results and
-deadlines, with MongoDB persistence and a separately evaluated AI processing service.
-Architecture and provider choices need team agreement before implementation.
+The [Requirements Baseline v1.0](docs/REQUIREMENTS_BASELINE.md) records the approved working
+scope. Phase 1 will use Express, MongoDB Atlas, protected local server storage and a
+deterministic backend question bank with topic matching. It must operate without Python
+or external AI services and disclose that questions come from predefined content. Real
+registration/login, backend authorization, persisted records and grading are required
+outcomes, not completed features.
 
-Future work includes authenticated identities, server-enforced course permissions,
-controlled file storage and processing, transcription/document extraction, generated
-questions, durable results and real error recovery. Evaluate AutoNote components against
-these contracts before reuse. Preserve stable IDs, original-result references and immutable
-grading snapshots when replacing mocks, and verify performance and privacy against the
-project requirements. None of these planned integrations is provided by this cleanup.
+Phase 2 may add validated transcription, lecture-note or AI quiz-generation capabilities.
+AutoNote remains optional and unintegrated. The [traceability matrix](docs/REQUIREMENTS_TRACEABILITY.md)
+connects the original workflows to proposed acceptance tests. The preliminary
+[architecture plan](docs/ARCHITECTURE_PLAN.md) identifies AD-01 through AD-04; authentication
+strategy, material readiness, upload limits, matching and submission idempotency remain
+open design choices. No architecture or database schema is implemented by these documents.
 
 ## Collaboration and contributions
 
