@@ -1,71 +1,16 @@
 # Study Assistant
 
-Study Assistant is an ICSI 418Y Software Engineering team project for helping students
-study course materials, review quiz feedback and practice weak topics, while giving
-teachers a way to manage course deadlines and review submitted work.
+Study Assistant is the ICSI 418Y Software Engineering team project for studying course
+materials, reviewing quiz feedback and practicing weak topics, with Teacher deadline
+management and submitted-result review.
 
-## Current development status
+The current runnable implementation is a **React/Vite Demo** using fictional profiles and
+browser-local state. Express, MongoDB Atlas, real authentication and protected server uploads
+have **not started**. AD-01 through AD-04 are prepared design deliverables; their documents
+retain **Prepared for Review** status and distinguish confirmed decisions from proposals.
+The next planned development task is **IMP-01A**, subject to its listed prerequisite decisions.
 
-This repository is the team's starting point for full-stack development. The runnable
-application is still a **React/Vite frontend prototype** with fictional profiles and
-browser-local mock services. The backend, database integration, production authentication
-and AI features are **planned, not implemented**.
-
-The frontend already demonstrates material selection and validation, sample quiz previews,
-answer submission and grading, follow-up practice, teacher result views and deadline
-management. Its existing screens, routes, styles, state and tests provide the foundation
-for future work.
-
-## Frontend and mock limitations
-
-The frontend uses React, React Router, JavaScript/JSX and plain CSS. The mock service
-layer in `src/services/demo.js` supplies the behavior used by the screens.
-
-- File selection checks the extension and nonzero size for PDF, PPTX, MP3 and WAV files.
-  Only metadata is stored; file bytes are not uploaded, parsed or transcribed.
-- Processing uses a timer. Quiz generation and targeted practice select predefined,
-  topic-tagged questions from fictional fixtures; there are no AI calls.
-- Drafts, results, deadlines and the active profile persist in local storage under
-  `study-assistant.demo.v1`, per browser origin. Use one active editing tab. Changing
-  the host or port gives a different local dataset.
-- The demo role selector and service guards illustrate student, teacher, course and
-  ownership rules. They do not provide production authentication or server authorization.
-- Deadlines use local calendar dates and in-app reminders. No external notifications
-  are sent. A simulated interrupted submission is not a real network recovery test.
-
-For a quick walkthrough, use Student to upload a nonempty supported file, open the ready
-lecture, generate a sample quiz, submit answers and review weak topics. Switch to Teacher
-to manage deadlines and inspect submitted results, then switch back to Student to see
-shared course changes. **Reset demo data** followed by **Confirm reset** restores the
-fictional fixtures. Deterministic failure controls remain available for development tests.
-
-## Repository structure
-
-| Path | Purpose |
-| --- | --- |
-| `src/main.jsx`, `src/App.jsx` | React entry, shared navigation, routes and prototype access checks |
-| `src/screens/`, `src/components/`, `src/styles/` | Views, reusable UI and styling |
-| `src/services/demo.js` | Mock materials, quizzes, attempts, grading, practice and deadlines |
-| `src/data/fixtures.js`, `src/state/Demo.jsx` | Fictional records, question banks and browser state |
-| `tests/services.test.js` | Node tests for mock behavior and access rules |
-| `tests/browser.mjs` | Playwright workflow, navigation, persistence and keyboard checks |
-| `index.html`, `vite.config.js`, `package.json`, `package-lock.json` | Frontend entry, build configuration and locked dependencies |
-| `AutoNote/` | Preserved legacy Python code for later AI/backend evaluation; outside the frontend runtime |
-| [Requirements baseline](docs/REQUIREMENTS_BASELINE.md) | Baseline v1.2 revision prepared for review; confirmed requirements, original authority and acceptance criteria |
-| [Requirements traceability](docs/REQUIREMENTS_TRACEABILITY.md) | Original UC/US/NFR identifiers mapped to Phase 1 requirements, existing screens and proposed tests |
-| [Component architecture](docs/COMPONENT_ARCHITECTURE.md) | AD-01 design completed for review: module responsibilities, workflows, confirmed decisions and unresolved proposals |
-| [Data model](docs/DATA_MODEL.md) | AD-02 Prepared for Review: ten entities, ERD, milestone evolution and proposed persistence/recovery design |
-| [API contract](docs/API_CONTRACT.md) | AD-03 Prepared for Review: confirmed decisions, proposed endpoints/DTOs, authorization and recovery |
-| [Implementation plan](docs/IMPLEMENTATION_PLAN.md) | AD-04 Prepared for Review: incremental vertical slices, dual-adapter migration, blocking decisions and verification gates; no IMP work started |
-| [Architecture plan](docs/ARCHITECTURE_PLAN.md) | AD-01 through AD-04 design review handoffs; implementation remains future work |
-| [Design assumptions](docs/design-assumptions.md) | Existing requirement decisions and prototype conventions |
-| [AutoNote import review](docs/AUTONOTE_IMPORT_REVIEW.md) | Legacy module relationships, security findings and known limitations |
-| [Historical archive](docs/archive/milestone-3/README.md) | Prior planning, UI-to-requirement mapping and manual acceptance walkthrough |
-
-`src/` remains at the repository root. Local `node_modules/`, `dist/` and `test-results/`
-are generated and ignored by Git.
-
-## Local setup and run
+## Quick Start: React Prototype
 
 Use Node.js **22.12 or newer** and npm. From the repository root:
 
@@ -74,19 +19,38 @@ npm ci
 npm run dev
 ```
 
-Open the URL printed by Vite. No backend service, database, API key or Python environment
-is needed to run the frontend. Use a local browser with storage enabled.
+Open the URL printed by Vite. Use a browser with local storage enabled. The Demo needs no
+backend, database, Python environment or API key. Do not run the legacy AutoNote scripts
+as part of setup.
 
-To build and preview the production bundle:
+As Student, select a nonempty PDF/PPTX/MP3/WAV, open the ready lecture, generate a sample
+quiz, submit answers and review weak topics. Switch to Teacher to manage deadlines and
+inspect submitted results. **Reset demo data**, then **Confirm reset**, restores fixtures.
+Use one active editing tab; changing host/port gives a separate browser-local dataset.
+
+To build and preview the production bundle of the Demo:
 
 ```sh
 npm run build
 npm run preview
 ```
 
+## Current and planned stack
+
+| Area | Runnable now | Planned Phase 1 |
+| --- | --- | --- |
+| Frontend | React, React Router, Vite, JavaScript/JSX and CSS | Preserve workflows; separate real API client and async state alongside Demo |
+| Identity/data | Fictional profiles, synchronous Demo Service, browser local storage | Express modular monolith, server-side sessions with HttpOnly cookie, CSRF/Origin protection, trusted course membership |
+| Storage | File metadata only; local quiz/results/deadlines | MongoDB Atlas application records and protected local server file bytes |
+| Questions | Predefined browser fixtures and client grading | Backend-managed predefined Question Bank, immutable snapshots and server grading |
+
+Phase 1 requires no Python, Whisper, LLM, AutoNote service or external AI dependency.
+Manual Topic matching does not interpret lecture contents or establish compliance with the
+original AI-dependent NFR-01. Optional AI enhancements belong to later reviewed work.
+
 ## Tests
 
-Run from the repository root after installing dependencies:
+After installing the locked dependencies, run from the repository root:
 
 ```sh
 npm test
@@ -94,85 +58,105 @@ npm run build
 npm run test:browser
 ```
 
-`npm test` runs seven service tests covering upload validation, generation, grading,
-practice, dates, access checks and reset behavior. The browser test uses the built bundle,
-starts its own loopback preview and isolated browser profile, and closes both when done.
-It checks the student and teacher workflows, navigation, persistence, keyboard interactions
-and narrow-screen dashboard layout.
+`npm test` runs seven Demo service tests. The browser suite uses the built bundle, starts
+its own loopback preview and isolated profile, and closes both afterward. It checks Student
+and Teacher workflows, navigation, local persistence, keyboard interactions and a narrow
+layout. These are prototype regressions, not real API/Atlas, security or NFR evidence.
 
-Microsoft Edge is the browser-test default. For another installed compatible Chromium
-browser, set `BROWSER_PATH` to its executable. For example, in PowerShell, replace this
-path with the browser installed on your machine:
+Microsoft Edge is the default. To use another installed compatible Chromium browser, set
+`BROWSER_PATH` to its executable, for example in PowerShell:
 
 ```powershell
 $env:BROWSER_PATH = 'C:\path\to\chrome.exe'
 npm run test:browser
 ```
 
-The test saves fresh screenshots in ignored `test-results/screens/`. `SCREENSHOT_DIR`
-can override the output directory; keep generated captures outside tracked documentation.
-The harness supplies a file at the operating system file-chooser boundary. This coverage
-does not establish production performance, security or accessibility compliance.
+Screenshots go to ignored `test-results/screens/`; `SCREENSHOT_DIR` can select another
+untracked output location. Automation supplies the file at the operating-system chooser
+boundary; manual native keyboard file selection remains separate verification.
 
-## Legacy AutoNote
+## Repository and documentation
 
-`AutoNote/` contains historical Python transcription, note-generation and knowledge-network
-experiments retained for possible reuse. It is not connected to the frontend and has not
-been verified as a working backend. Its dependency declarations are incomplete, and some
-scripts execute model calls or process local media when imported.
+| Path | Purpose |
+| --- | --- |
+| `src/main.jsx`, `src/App.jsx` | React entry, routes, shared navigation and prototype guards |
+| `src/screens/`, `src/components/`, `src/styles/` | Existing views, reusable UI and styles |
+| `src/services/demo.js` | Synchronous Demo workflows; preserve during migration |
+| `src/state/Demo.jsx`, `src/data/fixtures.js` | Browser state and fictional users/courses/question banks |
+| `tests/services.test.js`, `tests/browser.mjs` | Demo service and browser regression suites |
+| `package.json`, `package-lock.json`, `vite.config.js`, `index.html` | Scripts, locked dependencies and frontend configuration/entry |
+| `docs/` | Active requirements and design documents linked below |
+| [Milestone 3 archive](docs/archive/milestone-3/README.md) | Historical planning, UI mapping and prior walkthrough/evidence |
+| [AutoNote](AutoNote/README.md) | Preserved experimental Python source and variants; outside Phase 1 runtime |
 
-Read the [import review](docs/AUTONOTE_IMPORT_REVIEW.md) before evaluating or running any
-legacy module. Previously embedded credentials were removed during import; their owners
-still need to revoke or rotate them. The example environment contains placeholders only.
-The frontend setup above does not install or execute AutoNote.
+Start with the baseline for required outcomes, then follow the design and task handoffs.
+Confirmed requirements take precedence over earlier prototype conventions; proposed physical
+schemas, libraries and algorithms are not approved merely because they appear in a design.
 
-## Planned full-stack development
+| Document | Role |
+| --- | --- |
+| [Requirements baseline](docs/REQUIREMENTS_BASELINE.md) | Original authority, phased scope, confirmed decisions and acceptance criteria |
+| [Requirements traceability](docs/REQUIREMENTS_TRACEABILITY.md) | Original UC/US/NFR mapping to Phase 1 FRs, screens and proposed checks |
+| [Architecture plan](docs/ARCHITECTURE_PLAN.md) | AD-01 through AD-04 status and review handoffs |
+| [AD-01 Component Architecture](docs/COMPONENT_ARCHITECTURE.md) | Module responsibilities, trust boundaries and ownership |
+| [AD-02 Data Model](docs/DATA_MODEL.md) | Ten logical entities, ERD, milestone evolution and proposed persistence/recovery |
+| [AD-03 API Contract](docs/API_CONTRACT.md) | Confirmed API behavior, proposed endpoints/DTOs, authorization and retries |
+| [AD-04 Implementation Plan](docs/IMPLEMENTATION_PLAN.md) | Small future tasks, dependencies, technical gates, migration and verification |
+| [Historical prototype assumptions](docs/design-assumptions.md) | Milestone 3 conventions; retained at its existing path for established references |
+| [AutoNote import review](docs/AUTONOTE_IMPORT_REVIEW.md) | Legacy module/dependency/security findings and reuse limitations |
 
-The [Requirements Baseline v1.2](docs/REQUIREMENTS_BASELINE.md) records the approved working
-scope. Phase 1 will use Express, MongoDB Atlas, protected local server storage and a
-deterministic backend question bank with topic matching. It must operate without Python
-or external AI services and disclose that questions come from predefined content. Real
-registration/login, backend authorization, persisted records and grading are required
-outcomes, not completed features.
+Local `node_modules/`, `dist/`, `test-results/` and Python environments/caches are ignored
+artifacts, not shared source. Contributors should install from the lockfile, not copy a
+local environment. No generated or contributor-local files need deletion for this handoff.
 
-Phase 2 may add validated transcription, lecture-note or AI quiz-generation capabilities.
-AutoNote remains optional and unintegrated. The [traceability matrix](docs/REQUIREMENTS_TRACEABILITY.md)
-connects the original workflows to proposed acceptance tests. The preliminary
-[architecture plan](docs/ARCHITECTURE_PLAN.md) tracks the design work. The
-[AD-01 component design](docs/COMPONENT_ARCHITECTURE.md) is completed for review and records
-confirmed manual course-topic association, trusted preassigned membership, exactly 10
-distinct regular questions and 1-10 distinct targeted-practice questions. The
-[AD-02 data model](docs/DATA_MODEL.md) is Prepared for Review, with six confirmed refinements:
-global role plus membership, course offerings, at least one Topic at upload, topic-balanced
-selection, one Attempt per Quiz with preserved history, and date-only deadlines. It records
-M3 design evolution and proposed snapshots, recovery and submission consistency. Physical
-design proposals remain subject to review. Subsequent [AD-03 decisions](docs/API_CONTRACT.md)
-confirm server-side cookie sessions, trusted provisioning, synchronous uploads, operation-based
-generation replay, Start-time Attempts, Regular-only practice sources, per-course IANA calendars,
-revision conflicts, CSRF/Origin protection and unified errors. Exact limits, algorithms,
-libraries and recovery mechanics remain open. No backend or database schema is implemented.
+## Phase 1 implementation roadmap
 
-The [AD-04 implementation plan](docs/IMPLEMENTATION_PLAN.md) is Prepared for Review.
-Confirmed delivery uses small vertical slices and preserves Demo mode while adding a separate
-real API client and async state layer. IMP-01 through IMP-07 are future tasks; foundation
-decisions and prerequisite evidence must be reviewed before implementation starts.
+No IMP work has begun. [IMP-01A and its prerequisites](docs/IMPLEMENTATION_PLAN.md#8-first-implementation-handoff-and-future-prompt-structure)
+are the next planned starting point; authentication, adapter/configuration and local test
+boundaries need review before code starts. The [blocking register](docs/IMPLEMENTATION_PLAN.md#5-blocking-decision-register)
+tracks remaining choices as Open/Proposed.
 
-## Collaboration and contributions
+The delivery sequence is authentication/course access -> Topics/real upload -> regular
+Quiz preview -> Attempt/Draft/Result -> targeted practice. Deadlines can follow authentication
+independently; Teacher result review follows persisted Results. Final integration/regression
+and NFR verification follow the included workflows. Each functional slice must connect the
+UI, API/state and real persistence where applicable; backend handlers alone do not complete
+it. Keep Demo available while introducing the real adapter and asynchronous states.
 
-1. Pull the latest `main`, then create a focused branch such as
-   `git switch -c feature/material-api`. Use pull requests for team review.
-2. Describe the problem, scope and acceptance criteria before changing shared contracts.
-   Keep changes small; avoid combining feature work with unrelated formatting or moves.
-3. Keep fixtures and mocks available until a reviewed integration replaces them. Update
-   relevant tests and documentation when behavior or setup changes. Do not commit real
-   student data, recordings, transcripts or credentials as test fixtures.
-4. Run `npm test`, `npm run build`, `npm run test:browser` when the browser is available,
-   and `git diff --check`. In the pull request, report results and explain skipped checks.
-5. Commit dependency lockfile changes only with an intentional dependency update. Keep
-   local environment files, caches, logs, builds and screenshots untracked. Never place
-   private API keys in frontend code or client-exposed Vite variables.
-6. Summarize behavior changes, validation and known limitations in the pull request.
-   Coordinate changes to shared models or API boundaries with the team before merging.
+## Demo limitations and legacy boundary
 
-The historical archive supplies context and prior acceptance steps; it is not the current
-implementation plan. Keep active decisions in the design documentation and reviewed work.
+- Upload validates extension/nonzero size and stores metadata; it sends no file bytes.
+  Readiness is simulated by a timer. Quiz/practice questions are predefined fixture content.
+- Drafts, grades, deadlines and active profile live under `study-assistant.demo.v1` in
+  browser local storage. Client guards and the role selector demonstrate access rules;
+  they do not authenticate users or enforce production authorization.
+- Deadline comparisons use browser-local dates. Reminders are in-app; interrupted
+  submission is simulated. Real network recovery, backend persistence and NFR compliance
+  remain future verification work.
+
+[AutoNote](AutoNote/README.md) explores transcription, notes and knowledge-network generation.
+Its dependencies are incomplete/unverified and some scripts process files or call models
+when imported. **Do not execute it automatically** during setup, tests or Phase 1 work.
+Read the [import review](docs/AUTONOTE_IMPORT_REVIEW.md) before any separately authorized
+reuse evaluation. Previously embedded credentials were removed during import; their owners
+still need to revoke/rotate those historical values. This cleanup does not establish their
+revocation. All Python variants remain preserved.
+
+## Contribution and Git workflow
+
+1. Start from current `main` and create a focused branch, for example
+   `git switch -c codex/material-upload`. Coordinate the task scope and prerequisite decisions
+   before changing shared contracts; use pull requests and human review.
+2. Work on one AD-04 subtask or reviewed slice at a time. Preserve existing routes, Demo
+   behavior and unrelated edits; report any change to agreed contracts explicitly.
+3. Run relevant checks. For frontend behavior, use the service/build/browser commands above
+   when available; for documentation, validate references and `git diff --check`. Report
+   actual commands, failures and skipped checks. Demo tests never substitute for real API tests.
+4. Keep commits small and limited to reviewed files. Stop for review before commit/push unless
+   the specific task authorizes it; do not automatically proceed to the next implementation unit.
+5. Commit lockfile changes only with intentional dependency work. Keep credentials, session
+   secrets, real student data, recordings, transcripts, logs, environments and generated output
+   out of Git. Placeholder `.env.example` files may be shared; real secrets belong in local
+   environment configuration and must never be exposed through frontend Vite variables.
+6. Describe changed behavior, validation and remaining limitations in the pull request.
+   Use the requirements/design documents as shared authority; the archive supplies history.

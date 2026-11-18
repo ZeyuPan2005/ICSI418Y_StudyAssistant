@@ -14,5 +14,8 @@ captures remain in Git history (commit `f85648a`); current browser runs generate
 captures under ignored `test-results/screens/`.
 
 For current setup and contributions, see the [root README](../../../README.md).
-The [design assumptions](../../design-assumptions.md) and
-[AutoNote import review](../../AUTONOTE_IMPORT_REVIEW.md) remain outside the archive.
+The [historical prototype assumptions](../../design-assumptions.md) remain at their original
+path because existing design documents reference it; the page is explicitly labeled historical.
+Its original decision content is preserved. For active delivery tasks use the
+[AD-04 Implementation Plan](../../IMPLEMENTATION_PLAN.md). The
+[AutoNote import review](../../AUTONOTE_IMPORT_REVIEW.md) remains the legacy review reference.

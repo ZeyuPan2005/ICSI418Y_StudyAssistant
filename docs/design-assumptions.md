@@ -1,5 +1,11 @@
 # Design assumptions and requirement decisions
 
+> Historical Milestone 3 prototype reference. Retained at this path to preserve existing
+> documentation references. The original contents below describe Demo conventions, not
+> the current Phase 1 implementation plan. Use the [Requirements Baseline](REQUIREMENTS_BASELINE.md)
+> and [AD-04 Implementation Plan](IMPLEMENTATION_PLAN.md) for current requirements and work;
+> later confirmed decisions take precedence over earlier provisional assumptions.
+
 The submitted Milestone 2 report is the baseline. Section 2 defines US-01–07, section 3 defines UC-01–05, and section 4 defines NFR-01–06. The UI implements the approved eight-screen scope for Milestone 3 Part 4.
 
 | Decision | Basis and implementation |
