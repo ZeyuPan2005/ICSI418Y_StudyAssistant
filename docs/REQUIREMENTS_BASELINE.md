@@ -10,6 +10,14 @@
 | Approval scope | Task 2 decisions, four explicitly confirmed Task 3 decisions and six explicitly confirmed Task 4 decisions; no additional formal team sign-off is asserted. |
 | Revision review | AD-01/AD-02 revision prepared for review on 2026-11-17 against `e310d1b`; existing AD-01 work retained and architecture proposals remain unapproved. |
 
+
+> Subsequent refinement (Task 6, 2026-11-18): [AD-03 decisions AD03-D01 through D10](API_CONTRACT.md#1-confirmed-decisions-and-review-boundary)
+> now confirm cookie sessions/trusted provisioning, synchronous upload, generation replay,
+> Start-time Attempt creation, Regular-only practice sources, course-configured IANA calendar
+> policy, revision conflicts and CSRF/Origin/error behavior. Earlier open/proposed wording
+> below records the AD-01/AD-02 review stage; those decisions are preserved. Exact mechanisms
+> remain proposed/open in AD-03; no formal team approval is asserted.
+
 ## Purpose and scope
 
 Define the requirements for converting the existing frontend prototype into a working

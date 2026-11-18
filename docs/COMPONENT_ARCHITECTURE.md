@@ -8,6 +8,14 @@
 | Requirements reference | [Requirements Baseline v1.2](REQUIREMENTS_BASELINE.md); Task 3 confirmations preserved and Task 4 refinements recorded in [AD-02](DATA_MODEL.md) |
 | Inspected repository | `e310d1b` before this documentation-only change |
 
+
+> Subsequent refinement (Task 6, 2026-11-18): [AD-03 decisions AD03-D01 through D10](API_CONTRACT.md#1-confirmed-decisions-and-review-boundary)
+> now confirm cookie sessions/trusted provisioning, synchronous upload, generation replay,
+> Start-time Attempt creation, Regular-only practice sources, course-configured IANA calendar
+> policy, revision conflicts and CSRF/Origin/error behavior. Earlier open/proposed wording
+> below records the AD-01/AD-02 review stage; those decisions are preserved. Exact mechanisms
+> remain proposed/open in AD-03; no formal team approval is asserted.
+
 ## 1. Purpose, authority and scope
 
 Describe a **modular monolith** that preserves the existing study workflows while moving

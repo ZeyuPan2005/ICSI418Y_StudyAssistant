@@ -11,6 +11,14 @@
 | Repository inspected | `e310d1b` plus existing uncommitted AD-01 documentation, preserved by this revision |
 | Approval boundary | Confirmed requirements constrain the design. Fields, collections, indexes, state names, algorithms and transaction protocols below are proposals, not implemented or formally team-approved. |
 
+
+> Subsequent refinement (Task 6, 2026-11-18): [AD-03 decisions AD03-D01 through D10](API_CONTRACT.md#1-confirmed-decisions-and-review-boundary)
+> now confirm cookie sessions/trusted provisioning, synchronous upload, generation replay,
+> Start-time Attempt creation, Regular-only practice sources, course-configured IANA calendar
+> policy, revision conflicts and CSRF/Origin/error behavior. Earlier open/proposed wording
+> below records the AD-01/AD-02 review stage; those decisions are preserved. Exact mechanisms
+> remain proposed/open in AD-03; no formal team approval is asserted.
+
 ## 1. Sources and decision authority
 
 M2 and M3 were read from the local course workspace, outside the repository. PDF page

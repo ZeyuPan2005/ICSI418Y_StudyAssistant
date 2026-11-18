@@ -2,8 +2,8 @@
 
 **Direction:** Modular Monolith + Future AI Service
 **Requirements reference:** [Requirements Baseline v1.2](REQUIREMENTS_BASELINE.md)
-**Status:** AD-01 component design and AD-02 data model **Prepared for Review**; AD-03/04 pending. Unresolved proposals are not approved designs.
-**Date:** 2026-11-17
+**Status:** AD-01 component design, AD-02 data model and AD-03 API contract **Prepared for Review**; AD-04 pending. Unresolved proposals are not approved designs.
+**Date:** 2026-11-18
 
 ## Purpose and boundaries
 
@@ -56,7 +56,7 @@ The future AI service is optional and absent from the Phase 1 dependency path.
 
 ## Architecture work packages
 
-AD-01 and AD-02 documentation are prepared for review. AD-03/04 are subsequent design tasks;
+AD-01, AD-02 and AD-03 documentation are prepared for review. AD-04 is the next design task;
 none of the architecture is implemented by these documentation changes.
 Their deliverables and review questions are proposed; team member assignments and dates
 remain open. Requirement definitions are not repeated here.
@@ -65,17 +65,23 @@ remain open. Requirement definitions are not repeated here.
 | --- | --- | --- | --- |
 | AD-01 Component Architecture | [Completed design document for review](COMPONENT_ARCHITECTURE.md): diagrams, module ownership, workflows, invariants, decisions/proposals and handoff | FR-01 through FR-07 mapping, all original NFRs, AI independence and distinction between confirmed decisions and unresolved proposals; not implementation approval | Baseline v1.2 preserves four Task 3 and adds six Task 4 confirmations; unresolved design feeds AD-03 |
 | AD-02 Data Model | [Prepared for Review](DATA_MODEL.md): ten entities, ERD, proposed fields/indexes/snapshots, upload recovery and atomic submission; verified M2/M3 mapping and disclosed evolution | Six confirmed AD-02 decisions; at most one Attempt per Quiz, exactly one Result per submitted Attempt; independent practice history, offering isolation, derived alerts and explicit storage/transaction limits | Baseline v1.2 and AD-01 responsibilities; physical design proposals require review with AD-03 |
-| AD-03 API Contract | Operations, request/response/error semantics, authentication interface, file transfer, readiness, generation and submission behavior | Trace operations to ACs; specify unauthorized/invalid/failure/retry outcomes and ensure no client-controlled privilege or grade; document replaceable generation contract | AD-01 boundaries and AD-02 invariants; no route naming assumed now |
+| AD-03 API Contract | [Prepared for Review](API_CONTRACT.md): ten confirmed decisions, 30 proposed endpoints, DTOs, session/CSRF rules, revision conflicts and operation recovery | Trace all FRs and original UCs/USs/NFR limits; safe preview, independent practice and definite/unknown persistence outcomes | AD-01/AD-02 foundation; Task 6 subsequent confirmations; physical mechanisms and exact DTO/status choices await review |
 | AD-04 Implementation Plan | Reviewed increments, dependencies, migration from mocks, testing strategy and evidence/release gates | Assign AC-01 through AC-14 and NFV-01 through NFV-06 to verification work; identify AI-independent integration checks, NFR studies, rollback/recovery needs and scope decisions | Outputs of AD-01/02/03 plus resolution or explicit deferral of blocking questions |
 
-AD-02 may select schemas and indexes later; this document does not. AD-03 may select session
-or token contracts later; listing alternatives does not approve either. AD-04 should produce
+AD-02 fields/indexes remain proposals. Subsequent AD03-D01 confirms server-side cookie
+sessions; AD03-D02 through D10 settle further behavior in the API contract. AD-04 should produce
 a sequenced implementation plan only after contracts and invariants are sufficiently clear.
 
 ## Open design register
 
 The canonical questions are in the [baseline](REQUIREMENTS_BASELINE.md#open-design-questions-and-change-control).
-This table states what architecture work must resolve, without duplicating decisions.
+This table preserves the AD-01/AD-02 handoff context. Subsequent AD-03 confirmations
+supersede its earlier open alternatives: Q-01 session direction/trusted provisioning
+(AD03-D01/D02/D09), Q-02 synchronous upload (D03), Q-04 Regular-only practice source (D06),
+Q-05 generation identity/Start lifecycle/errors (D04/D05/D10), Q-06 draft revisions (D08),
+and Q-08 backend course-local IANA calendar policy (D07). The table's older proposal/open
+wording records that earlier review stage; remaining implementation choices are canonical
+in [AD-03 open choices](API_CONTRACT.md#12-open-choices-and-implementation-handoff).
 
 | Baseline question | Design analysis needed | Decision still open |
 | --- | --- | --- |
@@ -140,3 +146,12 @@ and the [AD-03 handoff](DATA_MODEL.md#15-ad-03-and-implementation-handoff) ident
 calendar, recovery and concurrency decisions still needed. Confirmed requirements do not
 approve physical fields/indexes/transactions. No implementation or formal team sign-off
 is asserted by marking AD-01/AD-02 Prepared for Review.
+
+## AD-03 review handoff
+
+[API Contract v1.0](API_CONTRACT.md) records Task 6 confirmations AD03-D01 through AD03-D10
+as later refinements, preserving AD-01/AD-02 historical decisions. Paths, DTOs, status codes,
+headers, session/CSRF libraries, transaction mechanisms and detailed selection/recovery
+policies remain proposals or open choices. See its [traceability](API_CONTRACT.md#11-requirements-components-and-data-traceability)
+and [implementation gates](API_CONTRACT.md#12-open-choices-and-implementation-handoff).
+AD-04 remains pending; Prepared for Review asserts no implementation or formal approval.

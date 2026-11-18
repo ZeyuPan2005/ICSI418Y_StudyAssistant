@@ -55,7 +55,8 @@ fictional fixtures. Deterministic failure controls remain available for developm
 | [Requirements traceability](docs/REQUIREMENTS_TRACEABILITY.md) | Original UC/US/NFR identifiers mapped to Phase 1 requirements, existing screens and proposed tests |
 | [Component architecture](docs/COMPONENT_ARCHITECTURE.md) | AD-01 design completed for review: module responsibilities, workflows, confirmed decisions and unresolved proposals |
 | [Data model](docs/DATA_MODEL.md) | AD-02 Prepared for Review: ten entities, ERD, milestone evolution and proposed persistence/recovery design |
-| [Architecture plan](docs/ARCHITECTURE_PLAN.md) | AD-01/AD-02 review handoff and remaining AD-03/AD-04 work |
+| [API contract](docs/API_CONTRACT.md) | AD-03 Prepared for Review: confirmed decisions, proposed endpoints/DTOs, authorization and recovery |
+| [Architecture plan](docs/ARCHITECTURE_PLAN.md) | AD-01/AD-02/AD-03 review handoff and pending AD-04 work |
 | [Design assumptions](docs/design-assumptions.md) | Existing requirement decisions and prototype conventions |
 | [AutoNote import review](docs/AUTONOTE_IMPORT_REVIEW.md) | Legacy module relationships, security findings and known limitations |
 | [Historical archive](docs/archive/milestone-3/README.md) | Prior planning, UI-to-requirement mapping and manual acceptance walkthrough |
@@ -144,8 +145,11 @@ distinct regular questions and 1-10 distinct targeted-practice questions. The
 global role plus membership, course offerings, at least one Topic at upload, topic-balanced
 selection, one Attempt per Quiz with preserved history, and date-only deadlines. It records
 M3 design evolution and proposed snapshots, recovery and submission consistency. Physical
-designs, authentication, upload limits, exact balancing, retry mechanics and the course
-timezone remain subject to review. No backend or database schema is implemented.
+design proposals remain subject to review. Subsequent [AD-03 decisions](docs/API_CONTRACT.md)
+confirm server-side cookie sessions, trusted provisioning, synchronous uploads, operation-based
+generation replay, Start-time Attempts, Regular-only practice sources, per-course IANA calendars,
+revision conflicts, CSRF/Origin protection and unified errors. Exact limits, algorithms,
+libraries and recovery mechanics remain open. No backend or database schema is implemented.
 
 ## Collaboration and contributions
 
