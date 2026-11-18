@@ -18,7 +18,7 @@ Any future reuse needs a separately reviewed security/dependency evaluation, con
 inputs, explicit credential handling and validation of the selected entry point. This
 README does not authorize installing dependencies, downloading models or calling services.
 
-See the [AutoNote import review](../docs/AUTONOTE_IMPORT_REVIEW.md) for module relationships,
+See the [AutoNote import review](../../docs/AUTONOTE_IMPORT_REVIEW.md) for module relationships,
 known risks and credential-remediation history. For the runnable prototype and team setup,
-use the [root README](../README.md). Historical credentials previously removed from source
+use the [root README](../../README.md). Historical credentials previously removed from source
 still require owner-managed revocation/rotation; removal alone does not establish that.

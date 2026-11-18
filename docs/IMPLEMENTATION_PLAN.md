@@ -35,15 +35,15 @@ All tests and implementation paths below are future work unless explicitly calle
 
 | Existing path / evidence | Observed assumption | Migration implication |
 | --- | --- | --- |
-| [package.json](../package.json) | React/Vite scripts and Demo tests; no Express/Atlas backend dependencies or server scripts | Backend structure/config/scripts require scoped future additions; none exist by virtue of AD documents |
-| [src/App.jsx](../src/App.jsx) | `useDemo()`, synchronous `session()` and render-time try/catch access/resource reads; uses `current.id` after choosing an assigned course | Explicit async session/loading/error/unauthenticated/no-course states; do not dereference a nonexistent course for a newly registered Student |
-| [src/state/Demo.jsx](../src/state/Demo.jsx) | Module-level `createDemo(window.localStorage)`, `useSyncExternalStore`, storage events and timer-based refresh | Keep Demo provider separate; real mode needs async query/state lifecycle, not promises inserted into sync selectors |
-| [src/services/demo.js](../src/services/demo.js) | Synchronous local save/notify; upload stores metadata; generation allocates Quiz and Attempt together; grading reads fixtures | Real API is server-authoritative; generation creates no Attempt, Start does; never reuse client grading or simulated storage as persistence |
-| [src/data/fixtures.js](../src/data/fixtures.js) | Fictional users/memberships, browser-local date comparisons, five regular and two practice questions per Topic | No production identity source; real bank must support ten questions for a single selected Topic; course calendar comes from backend |
-| [Materials.jsx](../src/screens/Materials.jsx) | Direct fixture import, synchronous upload/generate and simulated timer; no manual Topic selector | Add real topic selection/bytes/status/recovery branch; distinguish stored from eligible and preserve Demo behavior |
-| [Quizzes.jsx](../src/screens/Quizzes.jsx) | Render-time Quiz/Result reads; `quiz.attempt.answers` assumed present, immediate save/submit and navigation; fixture option indexes and `rows/missed` feedback | Async preview before Attempt, explicit Start, local pending answers, snapshot/option IDs, revision conflicts and acknowledged navigation |
-| [Dashboard.jsx](../src/screens/Dashboard.jsx), [Deadlines.jsx](../src/screens/Deadlines.jsx) | Render-time list calls; synchronous management and embedded submitted answer detail | Independently load panels, handle unavailable workflows during migration, invalidate/refetch after mutations; course-local date DTOs |
-| [tests/services.test.js](../tests/services.test.js), [tests/browser.mjs](../tests/browser.mjs) | Demo service assertions, localStorage inspection, role switching and simulated interruption | Preserve as Demo regressions; add separate future real API/Atlas/browser suites with persisted-state assertions, never relabel Demo tests as backend evidence |
+| [package.json](../client/package.json) | React/Vite scripts and Demo tests; no Express/Atlas backend dependencies or server scripts | Backend structure/config/scripts require scoped future additions; none exist by virtue of AD documents |
+| [src/App.jsx](../client/src/App.jsx) | `useDemo()`, synchronous `session()` and render-time try/catch access/resource reads; uses `current.id` after choosing an assigned course | Explicit async session/loading/error/unauthenticated/no-course states; do not dereference a nonexistent course for a newly registered Student |
+| [src/state/Demo.jsx](../client/src/state/Demo.jsx) | Module-level `createDemo(window.localStorage)`, `useSyncExternalStore`, storage events and timer-based refresh | Keep Demo provider separate; real mode needs async query/state lifecycle, not promises inserted into sync selectors |
+| [src/services/demo.js](../client/src/services/demo.js) | Synchronous local save/notify; upload stores metadata; generation allocates Quiz and Attempt together; grading reads fixtures | Real API is server-authoritative; generation creates no Attempt, Start does; never reuse client grading or simulated storage as persistence |
+| [src/data/fixtures.js](../client/src/data/fixtures.js) | Fictional users/memberships, browser-local date comparisons, five regular and two practice questions per Topic | No production identity source; real bank must support ten questions for a single selected Topic; course calendar comes from backend |
+| [Materials.jsx](../client/src/screens/Materials.jsx) | Direct fixture import, synchronous upload/generate and simulated timer; no manual Topic selector | Add real topic selection/bytes/status/recovery branch; distinguish stored from eligible and preserve Demo behavior |
+| [Quizzes.jsx](../client/src/screens/Quizzes.jsx) | Render-time Quiz/Result reads; `quiz.attempt.answers` assumed present, immediate save/submit and navigation; fixture option indexes and `rows/missed` feedback | Async preview before Attempt, explicit Start, local pending answers, snapshot/option IDs, revision conflicts and acknowledged navigation |
+| [Dashboard.jsx](../client/src/screens/Dashboard.jsx), [Deadlines.jsx](../client/src/screens/Deadlines.jsx) | Render-time list calls; synchronous management and embedded submitted answer detail | Independently load panels, handle unavailable workflows during migration, invalidate/refetch after mutations; course-local date DTOs |
+| [tests/services.test.js](../client/tests/services.test.js), [tests/browser.mjs](../client/tests/browser.mjs) | Demo service assertions, localStorage inspection, role switching and simulated interruption | Preserve as Demo regressions; add separate future real API/Atlas/browser suites with persisted-state assertions, never relabel Demo tests as backend evidence |
 
 Preserve `/c/:course`, existing screen paths, UI-01 through UI-08 and UI-01T where compatible.
 Authentication screens are supporting new UI, not invented original milestone screen IDs.
@@ -52,8 +52,8 @@ AutoNote stays outside the Phase 1 runtime. The original M2/M3 audit is not repe
 ### Proposed async migration sequence
 
 1. Establish separate API client and real-mode session context, proposed
-   `src/services/api.js` and `src/state/Api.jsx`. Review an adapter boundary before editing
-   screens; retain `src/services/demo.js` and `src/state/Demo.jsx` unchanged where possible.
+   `client/src/services/api.js` and `client/src/state/Api.jsx`. Review an adapter boundary before editing
+   screens; retain `client/src/services/demo.js` and `client/src/state/Demo.jsx` unchanged where possible.
 2. Integrate login/logout, `/auth/me`, CSRF initialization and assigned Course selection.
    Real-mode route guards resolve loading/401/403/concealed 404/no-course states before
    rendering resource views. Preserve return navigation only after authorization.
@@ -122,9 +122,9 @@ not a barrier requiring Deadlines to wait for grading.
 
 ## 4. Small future Codex tasks
 
-Every task below is **Proposed / not started**. Existing paths are actual files; `server/`,
-`src/services/api.js`, `src/state/Api.jsx`, `src/screens/Auth.jsx`, `tests/api/`,
-`tests/integration/` and `tests/api-browser.mjs` are **proposed new paths**, not created files.
+Every task below is **Proposed / not started**. Existing paths are actual files; `server/src/`,
+`client/src/services/api.js`, `client/src/state/Api.jsx`, `client/src/screens/Auth.jsx`, `server/tests/api/`,
+`server/tests/integration/` and `client/tests/api-browser.mjs` are **proposed new paths**, not created files.
 Choose exact layout/interface at the relevant gate; avoid moving the existing frontend.
 The common Definition of Done in section 7 applies to **each** task. Each task's exit below
 adds its specific acceptance criteria. Each Git boundary means a separate human review,
@@ -136,7 +136,7 @@ starting the next ID. Failure/recovery checks are mandatory, not optional follow
 **IMP-01A — Foundation and validated local configuration (foundation-only)**
 
 - Goal/dependencies: establish runnable Express/config/Atlas adapter skeleton after G-01/G-02/G-04 interface and G-14 local deployment decisions; no auth or domain slice claim.
-- Proposed files: new `server/` entry/config/persistence boundary and foundation checks; scoped `package.json`, lockfile and `vite.config.js` dev-proxy changes; documentation and placeholder-only environment example.
+- Proposed files: new `server/` entry/config/persistence boundary and foundation checks; scoped `client/package.json`, lockfile and `client/vite.config.js` dev-proxy changes; documentation and placeholder-only environment example.
 - Owners/data/operations: C02/C09, User/Course/CourseMembership storage boundary only; internal health/config diagnostics are proposed, not extra business endpoints or public admin APIs.
 - Behavior: validate required config without printing secrets, explicit startup/shutdown/errors, same-origin dev routing and protected storage location plan; no importing AutoNote.
 - Tests/exit/DoD: future automated config tests reject missing/malformed settings; authorized nonproduction Atlas connection smoke/restart/close evidence and Vite/API proxy check. Bad credentials/unavailable DB fail clearly without secret logs; Demo still launches independently. This task may connect only when a future implementation task authorizes it.
@@ -145,7 +145,7 @@ starting the next ID. Failure/recovery checks are mandatory, not optional follow
 **IMP-01B — Trusted identities, provisioning and protected auth/course APIs (foundation-only)**
 
 - Goal/dependencies: IMP-01A; settle G-01/G-02/G-03 and relevant G-13 schemas. Build authenticated service capacity, not a completed user-facing slice.
-- Proposed files: `server/` identity/policy/session/auth/course modules, trusted fictional provisioning and `tests/api/`, `tests/integration/`; no public provisioning routes.
+- Proposed files: `server/` identity/policy/session/auth/course modules, trusted fictional provisioning and `server/tests/api/`, `server/tests/integration/`; no public provisioning routes.
 - Owners/entities/endpoints: C02/C09; User, Course, CourseMembership; AD-03 register/login/me/logout/csrf and Course list/detail operations.
 - Behavior: secure password hashes, persistent server sessions, reviewed cookie/CSRF/Origin controls including auth actions; public Student has no assignments, trusted script provisions Teacher/offerings/memberships idempotently without embedded credentials. Backend role+membership checks precede data exposure.
 - Tests/exit/DoD: repeat provisioning yields no duplicates or destructive resets; real API tests cover Student registration with zero courses, forged roles/membership, trusted Teacher, invalid login, two same-code offerings, unauthorized direct course access, session restart/refresh, logout revocation and absent/invalid CSRF/Origin. Lost auth responses recover through session state; provisioning failure can be rerun safely. Persistence evidence uses scoped test data, not Demo.
@@ -154,7 +154,7 @@ starting the next ID. Failure/recovery checks are mandatory, not optional follow
 **IMP-01C — Real API adapter, session UI and authorized course navigation**
 
 - Goal/dependencies: IMP-01B and G-04; finish the first vertical slice.
-- Proposed files: new API client/state/Auth screen, scoped `src/main.jsx`, `src/App.jsx`, shared components and API browser tests; preserve Demo provider/service and existing routes.
+- Proposed files: new API client/state/Auth screen, scoped `client/src/main.jsx`, `client/src/App.jsx`, shared components and API browser tests; preserve Demo provider/service and existing routes.
 - Owners/entities/endpoints: C01/C02/C09; User/Course/CourseMembership; all IMP-01B operations, no extra original US/UI IDs.
 - Behavior: login, registration/logout, async initialization/expiry, CSRF refresh, assigned-course chooser, empty-course page and access errors; no `current.id` crash or local fixture fallback. Hide unfinished real business panels rather than calling Demo.
 - Tests/exit/DoD: browser registration shows no course access; provisioned users navigate only authorized courses; refresh/deep link/expired session/logout-relogin work; stale prior-user fetches never display. Test CSRF rejection, network failure, pending indicators, keyboard login and Demo/real isolation. Real user cannot invoke role switcher/reset as backend privilege.
@@ -165,7 +165,7 @@ starting the next ID. Failure/recovery checks are mandatory, not optional follow
 **IMP-02A — Protected bytes/metadata and recoverable upload APIs (foundation-only)**
 
 - Goal/dependencies: IMP-01C; resolve G-05/G-06 and material DTOs in G-13.
-- Proposed files: `server/` materials/topics/file adapter/operation coordinator, future `tests/api/` and cross-store failure tests; protected storage outside public assets.
+- Proposed files: `server/` materials/topics/file adapter/operation coordinator, future `server/tests/api/` and cross-store failure tests; protected storage outside public assets.
 - Owners/entities/endpoints: C02/C03/C09/C10; Topic, LectureMaterial, Course/membership; the five AD-03 material list/upload/detail/file/upload-operation routes plus Topic list.
 - Behavior: validate all selected Topics (at least one), actual format/nonempty bytes/limits, server-owned file key and metadata; synchronous success only when both stores associate. Guard file reads. Upload identity/fingerprint and unknown-outcome recovery prevent duplicate valid materials; no mandatory background job architecture.
 - Tests/exit/DoD: upload/retrieve actual supported bytes and compare integrity after restart; metadata survives. Inject disk/DB failures, crash windows, orphan bytes, foreign/mixed/empty Topics, unsupported/oversize/empty files, disconnection and lost response. Reconciliation neither deletes active uploads nor reports false stored state. Bank shortage leaves a valid upload intact.
@@ -174,7 +174,7 @@ starting the next ID. Failure/recovery checks are mandatory, not optional follow
 **IMP-02B — React Topic selection and real Material workflow**
 
 - Goal/dependencies: IMP-02A; integrate upload/list/detail/retrieval in existing UI-01/02/03.
-- Proposed files: scoped `src/screens/Materials.jsx`, `Dashboard.jsx`, API client/state and real-browser checks; direct fixture imports stay Demo-only.
+- Proposed files: scoped `client/src/screens/Materials.jsx`, `Dashboard.jsx`, API client/state and real-browser checks; direct fixture imports stay Demo-only.
 - Owners/entities/endpoints: C01/C03/C10 with C02/C09; LectureMaterial/Topic/Course; Topic and all material operations from IMP-02A.
 - Behavior: select one/many Topics, multipart real bytes, clear pending/error/stored versus eligibility feedback; no simulated readiness timer in real mode. Preserve operation identity across interrupted/ambiguous response; reauthenticate before authorized recovery.
 - Tests/exit/DoD: browser selects supported file/Topics, stores then refreshes and downloads identical bytes in a later authenticated session. Verify invalid associations/backend failures, interrupted upload, lost-success recovery with one material, inaccessible foreign file and insufficient bank. Keyboard upload/native chooser follow-up is recorded separately from injected browser file selection.
@@ -205,7 +205,7 @@ starting the next ID. Failure/recovery checks are mandatory, not optional follow
 **IMP-04A — Start, conditional Draft saves and async recovery**
 
 - Goal/dependencies: IMP-03B; resolve G-09 and sole-Attempt uniqueness aspects of G-10 before creation code.
-- Proposed files: `server/` C06 start/draft/read and persistence validation, `src/screens/Quizzes.jsx`, scoped preview Start control in Materials, API client/state and focused real tests.
+- Proposed files: `server/` C06 start/draft/read and persistence validation, `client/src/screens/Quizzes.jsx`, scoped preview Start control in Materials, API client/state and focused real tests.
 - Owners/entities/endpoints: C01/C02/C06/C09; Quiz/Attempt; POST Quiz attempts, GET Attempt and PUT Draft from AD-03, safe Quiz reads.
 - Behavior: Start creates the sole Draft, replay recovers it, preview alone creates none; full-answer draft replacement with expected revision, valid snapshot/option IDs, stale writes rejected. Keep visible unsynchronized choices separate from acknowledged answers/revision; no silent last-write-wins or grade.
 - Tests/exit/DoD: concurrent Start yields one persisted Attempt; concurrent Save and duplicate stale Save cannot overwrite; invalid IDs/incomplete draft allowed only as valid partial choices; refresh recovers acknowledged draft. Real browser network loss retains unsent choices, course/user switches isolate them, session expiry requires reauth, stale fetches do not erase edits. Submitted-state fixtures cannot reopen; final submit remains unavailable until IMP-04C.
@@ -214,7 +214,7 @@ starting the next ID. Failure/recovery checks are mandatory, not optional follow
 **IMP-04B — Validate finalization capabilities and persistence strategy (foundation-only)**
 
 - Goal/dependencies: IMP-04A; G-10 reviewed before implementing the finalization mechanism. Verify proposed unique Attempt.quizId and Result.attemptId constraints, Atlas transaction support and unknown-commit handling in the authorized nonproduction deployment.
-- Proposed files: narrowly scoped `server/` persistence/validation support, future `tests/integration/` capability/concurrency probes and test setup documentation; no production migrations or credentials.
+- Proposed files: narrowly scoped `server/` persistence/validation support, future `server/tests/integration/` capability/concurrency probes and test setup documentation; no production migrations or credentials.
 - Owners/entities/endpoints: C06/C09 with C02 access; Quiz/Attempt/Result; validates prerequisites for Submit and Attempt-result recovery, not a new public operation.
 - Behavior: record chosen topology/driver/session/read-write/commit retry strategy, index duplicate behavior, partial-write prevention and membership-revocation assumptions. Side effects outside transactions cannot be rolled back by Atlas; no file operations in retry callbacks.
 - Tests/exit/DoD: actual deployment capability evidence, duplicate uniqueness checks, verified abort versus committed/unknown outcome and safe retry/reconciliation. If capabilities/permissions are unavailable, report gate blocked and do not implement unsafe two-write finalization. Demo/local fake transactions are not Atlas evidence.
@@ -245,7 +245,7 @@ starting the next ID. Failure/recovery checks are mandatory, not optional follow
 **IMP-06A — Date-only course calendar and Teacher management**
 
 - Goal/dependencies: IMP-01C only; resolve G-12 and deadline fields/edit/delete semantics in G-13. Can run before IMP-02/03/04; does not depend on Quiz or grading.
-- Proposed files: `server/` C07 date/write/projection modules, `src/screens/Deadlines.jsx`, relevant Dashboard panel and API state/tests; protect unrelated unfinished panels from Demo fallback.
+- Proposed files: `server/` C07 date/write/projection modules, `client/src/screens/Deadlines.jsx`, relevant Dashboard panel and API state/tests; protect unrelated unfinished panels from Demo fallback.
 - Owners/entities/endpoints: C01/C02/C07/C09; Deadline/Course/User/CourseMembership; course Deadline GET/POST/PATCH/DELETE.
 - Behavior: assigned Teacher CRUD with title/type/real YYYY-MM-DD validation, past management allowed; backend derives today in trusted per-offering IANA zone. Students see today/future, day 0 through +7 Upcoming, +8 unmarked, past hidden; no stored Alerts. Refresh both views after edit/delete/day rollover.
 - Tests/exit/DoD: Teacher UI write persists across reload/restart; Student writes and unassigned requests denied; forged author/course cannot change rights. Check invalid/leap dates, 0/+7/+8/past, zones differing from browser, DST/day rollover, missing zone and two same-code offerings. Failed/unknown mutation response must reconcile current course state before retry; no stale badges or resurrected deleted item. Real browser and API state agree.
@@ -265,7 +265,7 @@ starting the next ID. Failure/recovery checks are mandatory, not optional follow
 **IMP-07A — Integrated real workflows and failure regression**
 
 - Goal/dependencies: IMP-05A, IMP-06A and IMP-06B; all transitive prerequisites delivered. Test preparation can begin earlier, final acceptance cannot.
-- Proposed files: separate `tests/api/`, `tests/integration/`, `tests/api-browser.mjs`, scoped test scripts/config and evidence documentation. Application fixes require a small explicitly scoped follow-up task, not an unbounded test cleanup.
+- Proposed files: separate `server/tests/api/`, `server/tests/integration/`, `client/tests/api-browser.mjs`, scoped test scripts/config and evidence documentation. Application fixes require a small explicitly scoped follow-up task, not an unbounded test cleanup.
 - Owners/entities/endpoints: C01–C10, all ten AD-02 entities, all 30 proposed AD-03 operations; trace table and section 6 define coverage.
 - Behavior/evidence: real Student/Teacher upload/generate/preview/Start/draft/submit/practice/calendar/review with AI/Python absent, restart/refresh, deep links, logout/CSRF, course ownership, real bytes and Atlas, concurrent writes, unknown outcomes and historical preservation.
 - Tests/exit/DoD: all included AC-01 through AC-14 have persisted-state assertions and browser outcomes; run separate existing Demo regressions, real API/Atlas cases and real UI suite with no fixture authentication fallback. Cover definite versus unknown persistence failures, restore/recovery and stale cross-user responses; failures stay open in the evidence register rather than being waived.

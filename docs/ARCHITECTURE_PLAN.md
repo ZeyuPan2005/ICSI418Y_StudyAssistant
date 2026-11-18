@@ -16,13 +16,13 @@ prepared for review; their proposed details do not imply implementation or forma
 
 The repository currently contains a React/Vite prototype with browser-local services and
 fixtures. It has no Express application, Atlas integration or protected server uploads.
-`AutoNote/` is preserved legacy source and must remain outside the Phase 1 runtime.
+`legacy/AutoNote/` is preserved legacy source and must remain outside the Phase 1 runtime.
 
 ## Approved direction and proposed responsibilities
 
 | Layer / component | Phase | Responsibility to design |
 | --- | --- | --- |
-| React/Vite presentation | Phase 1, existing foundation | Preserve screens, routing and core workflows; later connect an API-facing service boundary while clearly disclosing bank-based generation. Authentication UI remains to be designed. Keep `src/` in place for this task. |
+| React/Vite presentation | Phase 1, existing foundation | Preserve screens, routing and core workflows; later connect an API-facing service boundary while clearly disclosing bank-based generation. Authentication UI remains to be designed. Keep `client/src/` in place for this task. |
 | Node.js/Express application | Phase 1, not implemented | Real authentication, backend authorization, business rules, API handling and coordination of application persistence/file storage. |
 | MongoDB Atlas | Phase 1, not integrated | Required application data for the logical entities in the baseline, including stable quiz/result snapshots and material file references. Collection/schema design is proposed in [AD-02](DATA_MODEL.md), awaiting review. |
 | Protected local server storage | Phase 1, not implemented | Accepted file bytes, separated from public static assets and guarded by server-controlled access. Exact storage layout and delivery mechanism are unresolved. |

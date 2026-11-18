@@ -27,9 +27,9 @@ venv/
 .spyproject/
 
 # Confirmed AutoNote local inputs and generated outputs (relative to its cwd)
-/AutoNote/files/*.txt
-/AutoNote/files/*_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*.md
-/AutoNote/files/*_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*.json
-/AutoNote/transcription.txt
-/AutoNote/cov_audio.m4a
-/AutoNote/test_video.mp4
+/legacy/AutoNote/files/*.txt
+/legacy/AutoNote/files/*_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*.md
+/legacy/AutoNote/files/*_[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_*.json
+/legacy/AutoNote/transcription.txt
+/legacy/AutoNote/cov_audio.m4a
+/legacy/AutoNote/test_video.mp4

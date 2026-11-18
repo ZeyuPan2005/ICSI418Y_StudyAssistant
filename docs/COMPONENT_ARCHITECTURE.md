@@ -30,11 +30,11 @@ original diagrams, with findings in the [milestone audit](DATA_MODEL.md#2-milest
 This revision does not assert formal team approval. Original requirement IDs and numerical
 NFR conditions remain unchanged.
 
-The [README](../README.md), [design assumptions](design-assumptions.md),
+The [README](../README.md), historical Milestone 3 assumptions (team-local archive),
 [traceability matrix](REQUIREMENTS_TRACEABILITY.md), [architecture plan](ARCHITECTURE_PLAN.md),
-[AutoNote review](AUTONOTE_IMPORT_REVIEW.md), [mock services](../src/services/demo.js),
-[fixtures](../src/data/fixtures.js) and existing [service](../tests/services.test.js) and
-[browser tests](../tests/browser.mjs) describe the current prototype and its limits.
+[AutoNote review](AUTONOTE_IMPORT_REVIEW.md), [mock services](../client/src/services/demo.js),
+[fixtures](../client/src/data/fixtures.js) and existing [service](../client/tests/services.test.js) and
+[browser tests](../client/tests/browser.mjs) describe the current prototype and its limits.
 React/Vite is implemented; the Express, Atlas and file-storage behavior below is future work.
 
 **Status vocabulary:** Confirmed means explicitly supplied in Task 3/Task 4 (or an unchanged

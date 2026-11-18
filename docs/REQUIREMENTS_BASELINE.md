@@ -40,9 +40,9 @@ API routes, authentication mechanisms or deployment details.
 | Task 2: Establish Requirements Baseline v1.0 | Explicitly approved phased strategy, D-01 through D-03 and Phase 1 requirements. These are new development decisions, not quotations from M2. |
 | Task 3: AD-01 Component Architecture | Explicit confirmations AD01-D01, AD01-D02, AD01-D05 and AD01-D09, recorded in the [component design](COMPONENT_ARCHITECTURE.md#2-confirmed-architecture-decisions). Other architecture details remain proposals or open questions. |
 | Task 4: AD-02 Data Model | Explicit confirmations AD02-D01 through AD02-D06; [milestone audit](DATA_MODEL.md#2-milestone-consistency-and-design-evolution) verifies original M2/M3 and discloses the retake-policy and Concept-to-Topic changes. Physical designs remain proposed. |
-| [Design assumptions](design-assumptions.md) | Prototype conventions and design context; does not override original requirements or later explicit decisions. |
-| [Phase A plan](archive/milestone-3/phase-a-plan.md), [UI mapping](archive/milestone-3/ui-mapping.md), [checklist](archive/milestone-3/demo-checklist.md) | Historical workflow and UI evidence; not proof of production compliance. |
-| [README](../README.md), [frontend services](../src/services/demo.js), [fixtures](../src/data/fixtures.js), [service tests](../tests/services.test.js), [browser tests](../tests/browser.mjs) | Evidence of current prototype behavior only. |
+| Historical Milestone 3 assumptions (maintained in the team's local archive) | Prototype conventions; do not override the current baseline or later explicit decisions. |
+| Historical Milestone 3 Phase A plan, UI mapping and demo checklist (local team archive, no longer in this repository) | Earlier workflow/UI references; not proof of production compliance. |
+| [README](../README.md), [frontend services](../client/src/services/demo.js), [fixtures](../client/src/data/fixtures.js), [service tests](../client/tests/services.test.js), [browser tests](../client/tests/browser.mjs) | Evidence of current prototype behavior only. |
 | [AutoNote import review](AUTONOTE_IMPORT_REVIEW.md) | Legacy implementation findings and security limitations, not a functional specification or verified backend. |
 
 The five-page M2 PDF is outside this repository, at `Project/Milestone/2/` in the local

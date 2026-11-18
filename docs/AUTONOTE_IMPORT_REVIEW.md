@@ -1,5 +1,7 @@
 # Legacy AutoNote import review
 
+> Repository layout note: this document describes the historical import when `AutoNote/` was at the repository root. The preserved source now resides in `legacy/AutoNote/`; paths in the original audit below are historical.
+
 Reviewed 2026-11-17. This is repository preparation only. AutoNote is **not integrated**
 into the Study Assistant React/Vite prototype, and its runtime functionality has **not**
 been verified. Findings below come from local source/configuration inspection unless
