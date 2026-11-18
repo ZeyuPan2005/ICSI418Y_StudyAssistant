@@ -8,7 +8,7 @@
 ## Reading the matrix
 
 UC/US/NFR identifiers are preserved from M2. UI identifiers come from the archived
-[Milestone 3 UI mapping](archive/milestone-3/ui-mapping.md), not from invented M2 screens.
+historical Milestone 3 UI mapping (retained in the team's local archive), not from invented M2 screens.
 FR, AC and NFV identifiers are new baseline/planning identifiers. AC scenarios are defined
 once in the [baseline acceptance criteria](REQUIREMENTS_BASELINE.md#proposed-acceptance-criteria);
 NFV procedures and original conditions are in its [NFR section](REQUIREMENTS_BASELINE.md#non-functional-requirements).
@@ -70,8 +70,8 @@ supporting work. Authentication UI and API designs belong to later AD tasks.
 
 ## Existing evidence and remaining implementation gap
 
-The existing [Node service tests](../tests/services.test.js) and
-[Playwright browser tests](../tests/browser.mjs) remain unchanged. The following references
+The existing [Node service tests](../client/tests/services.test.js) and
+[Playwright browser tests](../client/tests/browser.mjs) remain unchanged. The following references
 identify inspectable cases, not future backend test files.
 
 | Area | Existing evidence | Gap to Phase 1 acceptance |
