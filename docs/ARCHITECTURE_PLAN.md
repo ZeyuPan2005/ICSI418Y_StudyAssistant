@@ -1,16 +1,18 @@
 # Preliminary Architecture Plan
 
 **Direction:** Modular Monolith + Future AI Service
-**Requirements reference:** [Approved Working Baseline v1.0](REQUIREMENTS_BASELINE.md)
-**Status:** Preliminary design planning; unresolved choices are not approved designs.
+**Requirements reference:** [Requirements Baseline v1.2](REQUIREMENTS_BASELINE.md)
+**Status:** AD-01 component design and AD-02 data model **Prepared for Review**; AD-03/04 pending. Unresolved proposals are not approved designs.
 **Date:** 2026-11-17
 
 ## Purpose and boundaries
 
 Organize the next architecture tasks without implementing features or selecting schemas,
 authentication/session mechanisms, endpoints or deployment details. The approved Task 2
-requirements and D-01 through D-03 constrain the design. Component boundaries below are
-proposals to evaluate against them, not a completed architecture or additional formal approval.
+requirements and D-01 through D-03 constrain the design. Task 3 additionally confirms
+AD01-D01/D02/D05/D09; Task 4 confirms AD02-D01 through AD02-D06. The
+[component architecture](COMPONENT_ARCHITECTURE.md) and [data model](DATA_MODEL.md) are
+prepared for review; their proposed details do not imply implementation or formal approval.
 
 The repository currently contains a React/Vite prototype with browser-local services and
 fixtures. It has no Express application, Atlas integration or protected server uploads.
@@ -22,33 +24,19 @@ fixtures. It has no Express application, Atlas integration or protected server u
 | --- | --- | --- |
 | React/Vite presentation | Phase 1, existing foundation | Preserve screens, routing and core workflows; later connect an API-facing service boundary while clearly disclosing bank-based generation. Authentication UI remains to be designed. Keep `src/` in place for this task. |
 | Node.js/Express application | Phase 1, not implemented | Real authentication, backend authorization, business rules, API handling and coordination of application persistence/file storage. |
-| MongoDB Atlas | Phase 1, not integrated | Required application data for the logical entities in the baseline, including stable quiz/result snapshots and material file references. Collection/schema design is AD-02. |
+| MongoDB Atlas | Phase 1, not integrated | Required application data for the logical entities in the baseline, including stable quiz/result snapshots and material file references. Collection/schema design is proposed in [AD-02](DATA_MODEL.md), awaiting review. |
 | Protected local server storage | Phase 1, not implemented | Accepted file bytes, separated from public static assets and guarded by server-controlled access. Exact storage layout and delivery mechanism are unresolved. |
-| Deterministic question provider | Phase 1, not implemented | Backend-managed predefined questions matched to supported topics; an implementation inside the monolith is proposed. Selection policy and provider contract remain open. |
+| Deterministic question provider | Phase 1, not implemented | Backend-managed predefined questions matched to supported topics; an implementation inside the monolith is proposed. Regular quizzes have exactly 10 distinct questions; practice has 1-10 with source exclusions. Detailed selection policy and provider contract remain open. |
 | Optional Python processing service | Potential Phase 2 | Selected, validated AutoNote capabilities behind a replaceable interface; not required for Phase 1 startup, uploads, readiness, generation, grading or any other core workflow. |
 
-### Proposed context and trust boundaries
+### Component design reference
 
-```mermaid
-flowchart LR
-    Browser[React/Vite browser] -->|Authenticated requests| App[Express modular monolith]
-    App -->|Application data| Atlas[(MongoDB Atlas)]
-    App -->|Protected file operations| Files[(Local server file storage)]
-    App --> Bank[Deterministic topic question provider]
-    App -. Optional future contract .-> AI[Phase 2 Python processing service]
-```
-
-The diagram is proposed direction, not a deployed topology. Only the Express boundary
-should trust authenticated identity and authorized operations; browser roles, grades,
-course IDs and filenames must be treated as untrusted input. Browser code must not receive
-Atlas credentials or direct access to protected storage. Exact credential handling, request
-transport and file-access contracts are AD-01/AD-03 decisions.
-
-A **modular monolith** here means one proposed Express backend with internal responsibility
-boundaries rather than separate Phase 1 network services per business feature. Candidate
-modules are identity/access, materials, quiz generation, attempts/grading/practice, deadlines
-and teacher result queries. These are design groupings, not approved folder names, classes
-or database collections. The future AI service would be optional and separately validated.
+Use the [AD-01 system context](COMPONENT_ARCHITECTURE.md#3-phase-1-system-context),
+[component diagram and responsibility matrix](COMPONENT_ARCHITECTURE.md#4-component-architecture)
+and [trust boundaries](COMPONENT_ARCHITECTURE.md#5-authentication-authorization-and-trust-boundaries)
+as the component-design source. All Phase 1 business modules, the bank provider and storage
+adapters are logical parts of one Express application, not separately deployed microservices.
+The future AI service is optional and absent from the Phase 1 dependency path.
 
 ## Requirement constraints for design
 
@@ -68,14 +56,15 @@ or database collections. The future AI service would be optional and separately 
 
 ## Architecture work packages
 
-These are subsequent design tasks, not work implemented by this documentation change.
+AD-01 and AD-02 documentation are prepared for review. AD-03/04 are subsequent design tasks;
+none of the architecture is implemented by these documentation changes.
 Their deliverables and review questions are proposed; team member assignments and dates
 remain open. Requirement definitions are not repeated here.
 
 | Package | Deliverable to prepare | Required review evidence | Dependencies |
 | --- | --- | --- | --- |
-| AD-01 Component Architecture | Component/trust-boundary diagrams, module responsibilities, runtime/deployment assumptions and proposed optional AI boundary | Trace each component to FRs; show where identity/course/ownership checks occur, how files remain protected and how Phase 1 runs with no AI/Python | Baseline v1.0; feed constraints into AD-02/03 |
-| AD-02 Data Model | Detailed fields, relationships, validation, storage representation, indexes, snapshot lifecycle and persistence/failure strategy | Cover all ten logical entities; demonstrate original-result immutability, membership enforcement, draft durability and one final result per Attempt; account for files plus Atlas | AD-01 responsibilities and baseline invariants; iterate with AD-03 |
+| AD-01 Component Architecture | [Completed design document for review](COMPONENT_ARCHITECTURE.md): diagrams, module ownership, workflows, invariants, decisions/proposals and handoff | FR-01 through FR-07 mapping, all original NFRs, AI independence and distinction between confirmed decisions and unresolved proposals; not implementation approval | Baseline v1.2 preserves four Task 3 and adds six Task 4 confirmations; unresolved design feeds AD-03 |
+| AD-02 Data Model | [Prepared for Review](DATA_MODEL.md): ten entities, ERD, proposed fields/indexes/snapshots, upload recovery and atomic submission; verified M2/M3 mapping and disclosed evolution | Six confirmed AD-02 decisions; at most one Attempt per Quiz, exactly one Result per submitted Attempt; independent practice history, offering isolation, derived alerts and explicit storage/transaction limits | Baseline v1.2 and AD-01 responsibilities; physical design proposals require review with AD-03 |
 | AD-03 API Contract | Operations, request/response/error semantics, authentication interface, file transfer, readiness, generation and submission behavior | Trace operations to ACs; specify unauthorized/invalid/failure/retry outcomes and ensure no client-controlled privilege or grade; document replaceable generation contract | AD-01 boundaries and AD-02 invariants; no route naming assumed now |
 | AD-04 Implementation Plan | Reviewed increments, dependencies, migration from mocks, testing strategy and evidence/release gates | Assign AC-01 through AC-14 and NFV-01 through NFV-06 to verification work; identify AI-independent integration checks, NFR studies, rollback/recovery needs and scope decisions | Outputs of AD-01/02/03 plus resolution or explicit deferral of blocking questions |
 
@@ -90,14 +79,14 @@ This table states what architecture work must resolve, without duplicating decis
 
 | Baseline question | Design analysis needed | Decision still open |
 | --- | --- | --- |
-| Q-01 Authentication and provisioning | Evaluate session/cookie vs token options, expiry/logout/recovery, password-hash policy and trusted role/membership provisioning | No authentication mechanism, hashing algorithm/configuration or enrollment flow selected |
-| Q-02 Material readiness | Define stored vs eligible/ready meaning without transcription or semantic extraction; decide trusted topic association and failure transitions | No state machine, queue or readiness timer selected |
+| Q-01 Authentication and provisioning - partially resolved | AD01-D02/AD02-D01 confirm global role, trusted memberships and no public self-enrollment; evaluate session/cookie vs token options and provisioning mechanics | No authentication mechanism, hashing configuration or account-to-membership association flow selected; sessions/cookies remain a proposal |
+| Q-02 Material readiness - partially resolved | AD01-D01 confirms manual course-specific topics; AD01-D05 prevents bank shortage invalidating material | AD02-D03 confirms at least one Topic at upload; editing/feedback remain open, AD-02 storage/recovery states are proposed |
 | Q-03 Upload policy and storage | Define size/type/resource limits, validation and file access; assess path safety, local disk capacity, retention and cross-store recovery | No numeric upload limits, disk layout or file-serving endpoint selected |
-| Q-04 Question matching | Evaluate topic sources, deterministic selection, bank maintenance, insufficient matches, quiz size and repeat generation/practice behavior | No tagging UI, matching algorithm, fallback or question count fixed |
-| Q-05 Submission idempotency | Analyze duplicate/concurrent requests and lost responses across draft/final result persistence | No idempotency-key, locking, index or transaction design selected |
+| Q-04 Question matching - partially resolved | AD01-D05 fixes exactly 10 regular questions; AD01-D09 fixes 1-10 practice questions, source exclusions and zero/perfect-source behavior | AD02-D04 confirms favored selected-Topic coverage with compensation; exact balancing/order, practice size/repetition and bank maintenance remain open; AD-02 proposes stable identity/snapshots |
+| Q-05 Submission idempotency | Analyze duplicate/concurrent submissions and lost responses; separately review proposed generation retry deduplication vs intentional regeneration | AD02-D05 fixes at most one Attempt per Quiz, immutable submissions and new Quiz for deliberate learning; AD-02 proposes unique indexes/conditional updates/transactions; retry contracts remain open |
 | Q-06 Drafts and recovery | Define save acknowledgement, reconnect behavior and competing sessions without losing selected answers | No autosave interval, conflict policy or client/server reconciliation protocol selected |
 | Q-07 NFR verification | Resolve AI-dependent NFR-01 treatment and document timing boundaries/fixtures for performance checks | No new Phase 1 performance target or original requirement waiver approved |
-| Q-08 Calendar semantics | Choose consistent date/timezone interpretation while keeping today through +7 inclusive and +8 unmarked | No timezone policy selected |
+| Q-08 Calendar semantics | Choose consistent date/timezone interpretation while keeping today through +7 inclusive and +8 unmarked | AD02-D06 confirms date-only YYYY-MM-DD; specific course timezone remains open |
 | Q-09 Authority and review process | Agree a shared M2 source location and how decisions/baseline changes are recorded | No new approval authority or team sign-off inferred |
 | Q-10 Future AI integration | Evaluate provider contract, synchronous/asynchronous processing, output validation, privacy, costs, failure isolation and safe AutoNote reuse | No queue, provider/model, deployment protocol or AutoNote module selected |
 
@@ -126,3 +115,28 @@ Use the [traceability matrix](REQUIREMENTS_TRACEABILITY.md) to confirm that US-0
 five critical use cases remain represented. Preserve the current frontend workflows and
 regression tests while later replacing mocks deliberately. This planning document creates
 no backend, database schema, API endpoint, infrastructure resource or new dependency.
+
+## AD-01 review handoff
+
+The [Task 3 confirmed decisions](COMPONENT_ARCHITECTURE.md#2-confirmed-architecture-decisions)
+remain AD01-D01, AD01-D02, AD01-D05 and AD01-D09. Task 4 adds the six
+[AD-02 confirmations](DATA_MODEL.md#confirmed-ad-02-decisions). The
+[proposal and handoff register](COMPONENT_ARCHITECTURE.md#15-proposal-evaluation-and-unresolved-design-handoff)
+evaluates nine proposals and assigns unresolved portions of Q-01 through Q-10 to later work.
+Baseline v1.2 and its traceability revision record the confirmed implications without changing
+original M2 IDs, numerical NFR conditions or source provenance. Completion of AD-01 means
+the design deliverable is ready for review, not that every proposed detail has been approved.
+
+## AD-02 review handoff
+
+[Milestone consistency and evolution](DATA_MODEL.md#2-milestone-consistency-and-design-evolution)
+records the original ERD mapping, file-derived Concepts versus manual Topics, the changed
+latest-score-only retake assumption, derived Alerts and assigned-Teacher result access.
+The original lecture-content goal and AI-dependent NFR-01 are not claimed satisfied.
+
+[Proposed persistence and lifecycle](DATA_MODEL.md#5-proposed-mongodb-storage-design)
+refine AD-01 responsibilities; [open items](DATA_MODEL.md#14-open-questions-proposals-and-risks)
+and the [AD-03 handoff](DATA_MODEL.md#15-ad-03-and-implementation-handoff) identify contract,
+calendar, recovery and concurrency decisions still needed. Confirmed requirements do not
+approve physical fields/indexes/transactions. No implementation or formal team sign-off
+is asserted by marking AD-01/AD-02 Prepared for Review.

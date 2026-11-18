@@ -2,11 +2,13 @@
 
 | Document control | Value |
 | --- | --- |
-| Version | 1.0 |
-| Status | Approved Working Baseline |
+| Version | 1.2 |
+| Requirements status | Approved Working Baseline for explicitly supplied requirements and decisions only |
+| Document status | **Prepared for Review** (v1.2 revision); no formal team approval of AD-01/AD-02 designs is asserted |
 | Established | 2026-11-17 |
 | Repository reference | `ZeyuPan2005/ICSI418Y_StudyAssistant`, inspected at `5833fc5` |
-| Approval scope | The development phases and decisions explicitly supplied in Task 2; no additional formal team sign-off is asserted. |
+| Approval scope | Task 2 decisions, four explicitly confirmed Task 3 decisions and six explicitly confirmed Task 4 decisions; no additional formal team sign-off is asserted. |
+| Revision review | AD-01/AD-02 revision prepared for review on 2026-11-17 against `e310d1b`; existing AD-01 work retained and architecture proposals remain unapproved. |
 
 ## Purpose and scope
 
@@ -17,7 +19,9 @@ implementation requirements without renumbering the original requirements.
 
 This document defines required outcomes. The [traceability matrix](REQUIREMENTS_TRACEABILITY.md)
 connects them to existing screens and proposed tests; the [architecture plan](ARCHITECTURE_PLAN.md)
-organizes subsequent design work. Neither document implements a backend or finalizes schemas,
+organizes subsequent design work. The [AD-01 component design](COMPONENT_ARCHITECTURE.md)
+and [AD-02 data model](DATA_MODEL.md) are prepared for review, distinguishing confirmed
+decisions from proposals. None of these documents implements a backend or finalizes schemas,
 API routes, authentication mechanisms or deployment details.
 
 ## Requirements authority and provenance
@@ -26,6 +30,8 @@ API routes, authentication mechanisms or deployment details.
 | --- | --- |
 | M2: submitted Milestone 2 report, local copy `Team01- Milestone 2- Report.pdf` | Original requirements authority. Section 1, p. 1: actors and open questions; section 2, pp. 1-2: US-01 through US-07; section 3, pp. 2-4: UC-01 through UC-05; section 4, p. 4: NFR-01 through NFR-06. Read and checked for this baseline. |
 | Task 2: Establish Requirements Baseline v1.0 | Explicitly approved phased strategy, D-01 through D-03 and Phase 1 requirements. These are new development decisions, not quotations from M2. |
+| Task 3: AD-01 Component Architecture | Explicit confirmations AD01-D01, AD01-D02, AD01-D05 and AD01-D09, recorded in the [component design](COMPONENT_ARCHITECTURE.md#2-confirmed-architecture-decisions). Other architecture details remain proposals or open questions. |
+| Task 4: AD-02 Data Model | Explicit confirmations AD02-D01 through AD02-D06; [milestone audit](DATA_MODEL.md#2-milestone-consistency-and-design-evolution) verifies original M2/M3 and discloses the retake-policy and Concept-to-Topic changes. Physical designs remain proposed. |
 | [Design assumptions](design-assumptions.md) | Prototype conventions and design context; does not override original requirements or later explicit decisions. |
 | [Phase A plan](archive/milestone-3/phase-a-plan.md), [UI mapping](archive/milestone-3/ui-mapping.md), [checklist](archive/milestone-3/demo-checklist.md) | Historical workflow and UI evidence; not proof of production compliance. |
 | [README](../README.md), [frontend services](../src/services/demo.js), [fixtures](../src/data/fixtures.js), [service tests](../tests/services.test.js), [browser tests](../tests/browser.mjs) | Evidence of current prototype behavior only. |
@@ -38,7 +44,7 @@ The report was read without adding or modifying it. Section and PDF page referen
 identify the source without creating a nonportable repository link. A shared authoritative
 report location remains to be agreed in Q-09.
 
-Descriptions below summarize the verified report unless identified as Task 2 decisions.
+Descriptions below summarize the verified report unless identified as Task 2, Task 3 or Task 4 decisions.
 The original report remains authoritative for exact wording. Do not reinterpret an open
 question or prototype behavior as an approved design. Later changes must identify affected
 IDs, source/decision, acceptance impact and baseline version in a reviewed change.
@@ -55,8 +61,11 @@ IDs, source/decision, acceptance impact and baseline version in a reviewed chang
 UC-01 ties readiness to usable content. Task 2 D-03 explicitly stages delivery through
 predefined topic-matched content, with semantic extraction deferred. Phase 1 must disclose
 this limitation and associate questions with the eligible material's supported topics;
-it must not claim to have interpreted file contents. The topic source and readiness rule
-remain Q-02/Q-04. Meeting this phased acceptance is not evidence that the original
+it must not claim to have interpreted file contents. Task 3 confirms manual selection from
+predefined course-specific topics, with backend validation and multiple-topic support.
+Task 4 requires at least one Topic at upload and favors Topic coverage; exact readiness
+representation and selection algorithms remain Q-02/Q-04.
+Meeting this phased acceptance is not evidence that the original
 content-understanding goal or AI-dependent NFR-01 has been fully satisfied.
 
 ## Actors and roles
@@ -82,7 +91,32 @@ human actors. The prototype role switcher is not an authentication solution.
 | D-03 | Use a backend-managed predefined topic-tagged bank, persist real quizzes and question snapshots, disclose predefined content, and keep the generation interface replaceable. AutoNote is not a Phase 1 dependency. | Task 2 |
 
 React/Vite, Express and MongoDB Atlas are the approved technology direction. The proposed
-component organization and future AI boundary are preliminary; see the architecture plan.
+component organization and future AI boundary are documented for review in AD-01; see the
+architecture plan. Task 3 confirms the following refinements without approving all design proposals:
+
+| ID | Confirmed refinement | Affected requirements |
+| --- | --- | --- |
+| AD01-D01 | Manual selection from predefined course-specific topics, multiple-topic materials, backend validation and predefined-content disclosure; no semantic extraction. | FR-02, FR-03 |
+| AD01-D02 | Server-controlled roles and trusted preassigned memberships; no public Teacher/self-enrollment privilege or enrollment-administration UI. | FR-01 and all course-scoped operations |
+| AD01-D05 | Successful regular quizzes contain exactly 10 distinct eligible questions; fewer than 10 fails without a partial Quiz or invalidating uploaded material. | FR-03 |
+| AD01-D09 | Successful targeted practice contains 1-10 distinct eligible questions on missed topics, excluding source-quiz questions; zero eligible questions or a perfect source creates no practice. Separate linked records preserve the original record set. | FR-05 |
+
+Task 4 confirms the following business refinements; [AD-02](DATA_MODEL.md) records their
+implications and the inspected M3 evolution without approving physical designs.
+
+| ID | Confirmed refinement | Affected requirements |
+| --- | --- | --- |
+| AD02-D01 | Backend-controlled global Student/Teacher role plus trusted CourseMembership; authorize using role, membership and ownership. Public registration grants no Teacher/arbitrary membership privileges. | FR-01, AC-01/11 |
+| AD02-D02 | Separate Course offerings for different terms/years of the same code; isolate memberships, materials, topics, questions, quizzes, results and deadlines. Exact uniqueness key remains proposed. | FR-01 through FR-07, AC-11 |
+| AD02-D03 | At upload require at least one predefined Topic of the selected Course; allow multiple and validate the entire association. No semantic extraction; storage success does not guarantee sufficient questions. | FR-02/03, AC-02/03/05 |
+| AD02-D04 | Exactly 10 distinct eligible regular questions matching Course and selected Topics, favoring coverage. Empty Topics may be compensated by others; fewer than 10 overall fails without partial Quiz or invalidated material. Algorithm/ties remain proposed. | FR-03, AC-04/05 |
+| AD02-D05 | One owning Student and at most one Attempt per Quiz; submitted Attempts never reopen/overwrite. New deliberate learning uses a new Quiz; preserve historical Quiz/Attempt/Result, including independent linked practice. | FR-03/04/05, AC-04/06/07 |
+| AD02-D06 | YYYY-MM-DD date-only Deadline, not a cutoff timestamp; day 0 through +7 Upcoming, +8 visible/unmarked, past hidden from Students. Consistent course timezone required; specific zone unconfirmed. | FR-06, AC-09 |
+
+Request format, exact balancing/ties, practice size/repetition, retry identities, seed scripts,
+sessions/cookies, MongoDB fields/indexes/transactions and upload recovery remain proposals.
+AD02-D05 intentionally supersedes M3's most-recent-score retake assumption; AD02-D03 preserves
+the explicit Phase 1 limitation relative to M3 file-derived Concepts.
 
 ## Functional requirements
 
@@ -96,7 +130,10 @@ accounts with server-controlled roles and preassigned memberships. The backend s
 role, course and student-ownership checks on every relevant operation, independent of UI
 visibility or client-supplied identity. Unauthorized requests shall neither expose protected
 data nor perform prohibited writes. Registration shall not confer Teacher privileges or
-arbitrary course access. Authentication/session strategy and provisioning remain Q-01.
+arbitrary course access. AD01-D02 confirms trusted provisioning as the membership authority
+and excludes an enrollment-administration UI. Authentication/session strategy and the trusted
+provisioning mechanism remain Q-01. AD02-D01 makes the role global; AD02-D02 isolates
+assignments and resources by offering, including identical course codes in different terms/years.
 
 ### FR-02 - Lecture material upload
 
@@ -109,7 +146,11 @@ file reference in Atlas. Users shall see meaningful upload, readiness and failur
 Rejected or failed uploads shall not appear as valid ready materials. A failure to store
 bytes or metadata shall not be reported as success. Readiness must not imply transcription
 or semantic understanding. Detailed validation, limits and cross-store failure handling
-remain Q-02/Q-03; no schema or state enumeration is fixed here.
+remain Q-02/Q-03; no schema or state enumeration is fixed here. Under AD01-D01 users select
+predefined course-specific topics manually; a material may have multiple topics, and the
+backend validates the entire topic/course association. AD02-D03 requires at least one
+predefined Topic at upload; empty or foreign-course selections cannot be accepted.
+Question-bank insufficiency must not invalidate an otherwise valid uploaded material (AD01-D05).
 
 ### FR-03 - Quiz generation
 
@@ -121,8 +162,13 @@ The student shall preview questions and answer options before starting. Missing/
 material, insufficient matching content and generation/persistence failures shall produce
 clear feedback without an empty/invalid quiz or changes to existing files and quizzes.
 The UI shall disclose predefined content rather than AI analysis. The generation interface
-shall allow later provider replacement. Topic sourcing, selection rules and quiz size remain
-Q-04; the prototype's fixed ten-question bank is not a blanket Phase 1 design decision.
+shall allow later provider replacement. AD01-D01 confirms manual, validated course-topic
+association. AD01-D05 requires exactly 10 distinct eligible questions per successful regular
+quiz; fewer than 10 fails clearly, creates no partial Quiz and does not invalidate the
+uploaded material. AD02-D04 favors selected-Topic coverage and permits empty Topics to
+be compensated by others. Exact balancing/ordering and retry mechanisms remain Q-04/Q-05;
+AD02-D05 requires a new Quiz for a deliberate new learning attempt.
+This regular-quiz size does not apply to targeted practice or waive the original NFR-01.
 
 ### FR-04 - Quiz submission and feedback
 
@@ -135,20 +181,27 @@ Duplicate or retried final submissions shall not create additional final results
 the original grade. Students shall revisit only their own results. Grading snapshots shall
 remain stable when the source question bank changes. Durable writes and concurrent duplicate
 handling are required outcomes; their mechanism remains Q-05. Draft acknowledgement and
-recovery behavior remain Q-06 without relaxing the original NFR-06 outcome.
+recovery behavior remain Q-06 without relaxing NFR-06. AD02-D05 limits each Student-owned
+Quiz to at most one Attempt; submitted Attempts never reopen/overwrite. Deliberate new
+learning creates a new Quiz and preserves historical Quiz, Attempt and Result records.
 
 ### FR-05 - Targeted follow-up practice
 
 **Mapping:** UC-04 / US-04.
 
 For a student's graded result with missed topics, the system shall choose distinct practice
-questions focused on those topics, create a separate Quiz and Attempt and link the practice
-to the original Result. Practice questions shall be distinct from the source quiz. Creating
+questions focused on those topics, create a separate Quiz and its own Attempt, then its own
+Result on successful submission. The practice Quiz links to the original Result; that
+source link never substitutes for the practice Result, which does not exist before
+submission. Practice questions shall be distinct from the source quiz. Creating
 and completing practice shall never modify the original Quiz, Attempt, answers, Result or
 score. The student shall be able to return to the original result. A perfect result shall
 explain that targeted review is unnecessary and create no practice quiz. An unsuccessful
-request shall leave the original intact and create no invalid practice. Selection when the
-bank lacks enough distinct questions and repeated-practice policy remain Q-04.
+request shall leave the original intact and create no invalid practice. AD01-D09 requires
+1-10 distinct eligible questions for successful practice and at least one eligible question
+after source-quiz exclusions. With zero, explain the failure and create no practice. Exact
+size within this range, coverage/ordering and repeated-practice policy remain Q-04; ten
+questions are not a practice minimum.
 
 ### FR-06 - Deadline management and visibility
 
@@ -161,7 +214,8 @@ inclusive shall be marked Upcoming; day +8 and later remain visible without that
 Past dates shall be omitted from student lists. Changes and removals shall update both the
 dashboard and deadline view without stale reminders. Reminders are in-app only. These
 calendar-window decisions are explicitly supplied in Task 2, not original numerical M2
-requirements. The consistent server/client calendar-timezone rule remains Q-08.
+requirements. AD02-D06 confirms YYYY-MM-DD date-only values, not cutoff timestamps.
+Alerts remain derived, preserving M3. The specific course calendar timezone remains Q-08.
 
 ### FR-07 - Teacher result review
 
@@ -196,13 +250,14 @@ target is approved here.
 ## Logical data requirements
 
 These are domain concepts, not database collections or schemas. Field definitions,
-relationships/cardinalities, indexes, document boundaries and persistence strategies belong
-to AD-02. References needed by the workflows do not decide their storage representation.
+relationships/cardinalities, indexes, document boundaries and persistence strategies are
+proposed in [AD-02](DATA_MODEL.md), prepared for review. Workflow references do not approve
+their storage representation.
 
 | Entity | Required business meaning |
 | --- | --- |
 | User | Authenticated identity with a server-controlled role. |
-| Course | Study context for course-scoped activities. |
+| Course | Separate term/year offering; all course-scoped activities remain isolated. |
 | CourseMembership | Server-controlled assignment used to authorize course access. |
 | LectureMaterial | An accepted upload with ownership/course context, status and a protected file reference. |
 | Topic | A subject used to match questions and identify weak areas. |
@@ -210,7 +265,7 @@ to AD-02. References needed by the workflows do not decide their storage represe
 | Quiz | A persisted lecture/practice question set with stable snapshots and ownership context. |
 | Attempt | A student's draft answers and submission lifecycle, separate for follow-up practice. |
 | Result | Persisted score, submitted-answer/feedback snapshot, missed topics and submission time. |
-| Deadline | A teacher-managed course date and its reminder context. |
+| Deadline | Teacher-managed date-only course entry; reminders are derived, not persistent Alert entities. |
 
 Question snapshots and grading snapshots must preserve historical meaning. Do not equate
 client local storage with the required application persistence. Uploaded bytes reside in
@@ -247,7 +302,11 @@ supported, nonempty file is uploaded, then actual bytes are stored in protected 
 storage and Atlas records the material's uploader, course, metadata, status and reference.
 A later authenticated session can retrieve the persisted material state. Neither an
 unauthenticated request nor an unassigned-course request can upload or bypass file access
-controls. The UI distinguishes successful storage from readiness and discloses no AI analysis.
+controls. Users can manually associate multiple predefined course topics, and the backend
+validates the entire set at upload. Require at least one Topic; reject empty and foreign-course
+selections, including mixed valid/foreign sets (AD02-D03). Test isolation across offerings
+sharing one code.
+The UI distinguishes successful storage from readiness and discloses no AI analysis.
 
 ### AC-03 - Upload validation and storage failure
 
@@ -260,17 +319,25 @@ and cleanup mechanics are selected in AD-02, not by this scenario.
 ### AC-04 - Persisted, topic-matched quiz and preview
 
 Given eligible material with supported topics and a sufficient predefined bank, when its
-authorized Student requests generation, then the backend creates a persisted Quiz and
-question snapshots matched to those topics and presents questions/options before Start.
+authorized Student requests generation with at least 10 eligible distinct questions, then
+the backend persists a regular Quiz with exactly 10 distinct question snapshots matched to
+those topics and presents questions/options before Start. Test eligible pools of 10 and 11;
+both successful results contain exactly 10, counting unique questions rather than tag matches.
+Check favored Topic coverage and an empty selected Topic compensated by others; exact
+balancing remains proposed (AD02-D04).
 Reloading retrieves that Quiz. The UI explicitly says predefined content, not AI analysis.
-Tests use the topic/readiness policy selected under Q-02/Q-04 rather than infer file semantics.
+Tests use the confirmed manual topic association and the remaining readiness/matching policy
+selected under Q-02/Q-04 rather than infer file semantics.
 
 ### AC-05 - Generation failure
 
-Given ineligible material, no supported matches, or an induced provider/persistence failure,
+Given ineligible material, fewer than 10 eligible distinct regular questions (including zero
+or nine), or an induced provider/persistence failure,
 when generation is requested, then the system explains the failure, creates no empty/invalid
-Quiz and leaves existing quizzes and uploaded files unchanged. A subsequent successful
-request follows AC-04. This does not decide whether repeated generation creates a new quiz.
+Quiz and leaves existing quizzes and uploaded files unchanged. Insufficient question-bank
+coverage must not invalidate a successfully uploaded material. A subsequent successful
+request follows AC-04. Deliberate new learning creates a new Quiz (AD02-D05); retransmission
+and unknown-outcome reconciliation remain separate AD-02/AD-03 mechanism proposals.
 
 ### AC-06 - Drafts, backend grading and duplicate protection
 
@@ -280,13 +347,18 @@ A completed submission is graded by the backend using its trusted snapshot, igno
 client-supplied grade; answers, score, feedback and timestamp persist and can be revisited.
 Repeated/concurrent final submissions, including retry after a lost response, yield only one
 final result for that Attempt and do not change its grade. Changes to the question bank do
-not alter the completed result. Test network interruption and reconnect as specified in NFR-06.
+not alter the completed result. Verify at most one Attempt per Quiz under concurrent Start,
+no reopening after submission, and new Quiz identity with preserved history for deliberate
+new learning (AD02-D05). Test network interruption/reconnect as specified in NFR-06.
 
 ### AC-07 - Targeted practice and immutable originals
 
 Given an owned graded result with missed topics and distinct matching practice questions,
-when practice is generated and completed, then it has a separate Quiz and Attempt, only
-questions for missed topics, no source-quiz questions, and a link back to the source Result.
+when practice is generated and completed, then it has a separate Quiz, its own Attempt
+and its own submitted Result. The practice Quiz contains
+1-10 distinct questions for missed topics, no source-quiz questions, and a link back to the
+source Result. Test eligible pools of 1, 9, 10 and 11: successful practice is nonempty, at
+most 10 and never exceeds the pool; exact size follows the reviewed policy, not a ten-item minimum.
 Compare the entire original Quiz, Attempt, answers, Result and score before/after: all remain
 unchanged. Follow the return link and verify the original feedback.
 
@@ -304,7 +376,8 @@ deleted, then they persist and student course views reflect the current values. 
 title/type or invalid date prevents saving. Teachers can manage past entries. Students see
 today and future entries: days 0 and +7 are Upcoming, +8 is visible without the label, and
 past dates are absent. Test both UI-01 and UI-08 after edits/removals and under the agreed
-calendar policy (Q-08). No external notification service is required.
+calendar policy (Q-08). Validate actual YYYY-MM-DD dates without treating them as cutoff
+timestamps; alerts remain derived. No external notification service is required.
 
 ### AC-10 - Teacher review and course isolation
 
@@ -354,21 +427,29 @@ explicitly record a reviewed baseline amendment.
 
 | ID | Question | Design work |
 | --- | --- | --- |
-| Q-01 | Session vs token approach; credential policy/hash configuration; logout/expiry/recovery; trusted Teacher provisioning; linking public registrations to preassigned memberships without self-enrollment. | AD-01, AD-02, AD-03 |
-| Q-02 | What makes stored material eligible/ready without semantic extraction? Which statuses/transitions and failures are shown, and who controls the topic association? | AD-01, AD-02, AD-03 |
+| Q-01 | Partially resolved: AD01-D02/AD02-D01 confirm global role and trusted memberships with no self-enrollment. Still open: session/token mechanism, credential policy/hash configuration, logout/expiry/recovery and provisioning/account association process. | AD-02, AD-03 |
+| Q-02 | Partially resolved: AD01-D01 fixes manual predefined course-topic association; AD01-D05 separates bank insufficiency from material validity. AD02-D03 fixes at least one Topic at upload. Still open: editing rights, storage/readiness/eligibility states, recovery and feedback; AD-02 proposes mechanisms. | AD-02, AD-03 |
 | Q-03 | Upload size/count/resource limits, server-side format validation, naming/path protection, file access delivery, retention, backup and recovery across local files and Atlas. No numerical limits approved yet. | AD-01, AD-02, AD-03 |
-| Q-04 | Trusted topic source, deterministic matching/ordering, bank authoring, quiz size, insufficient matches, repeat generation and repeated-practice selection. | AD-01, AD-02, AD-03 |
-| Q-05 | How to ensure one final result per Attempt under concurrency, retries and partial persistence without mutating snapshots. No idempotency key/index/transaction strategy selected. | AD-02, AD-03 |
+| Q-04 | Partially resolved: manual topics, exactly 10 regular questions, 1-10 practice questions, source exclusions and insufficient-pool outcomes confirmed by AD01-D01/D05/D09. AD02-D04 favors coverage and permits compensation from other selected Topics; AD02-D05 requires new Quiz identity for deliberate learning. Still open: exact balancing/ordering, bank identity/versioning/authoring, practice size/repetition and topic/material changes. | AD-02, AD-03 |
+| Q-05 | How to ensure one final result per Attempt under concurrency, retries and partial persistence without mutating snapshots. Separately evaluate proposed generation retry deduplication versus intentional regeneration. AD02-D05 fixes at most one Attempt per Quiz and immutable submissions/history; AD-02 proposes keys/indexes/transactions, without approving a mechanism. | AD-02, AD-03 |
 | Q-06 | Draft-save acknowledgement, interruption recovery, conflicting sessions and retry feedback while meeting NFR-06. | AD-02, AD-03, AD-04 |
 | Q-07 | How should NFR-01's original AI-service condition be applied across phases? Define reproducible NFR-01/02 timing protocols; do not waive or replace original thresholds implicitly. | AD-04; requirements decision needed |
-| Q-08 | Calendar timezone/date comparison across server and browsers, preserving the approved day 0/+7/+8 rules. | AD-02, AD-03 |
-| Q-09 | Where can all teammates access the authoritative M2 report, and how will future requirement revisions and approvals be recorded? | AD-04 |
+| Q-08 | AD02-D06 confirms date-only YYYY-MM-DD and day 0/+7/+8; specific course timezone and server/browser rollover policy remain open. | AD-02, AD-03 |
+| Q-09 | Where can all teammates access the authoritative M2 and M3 reports, and how will future requirement revisions and approvals be recorded? | AD-04 |
 | Q-10 | Future AI provider contract, optional service boundary, processing lifecycle, privacy and failure isolation; which AutoNote components can pass validation? | AD-01, AD-03, AD-04 |
 
 ## Baseline review record
 
-Version 1.0 records the Task 2 decisions and verified M2 identifiers/conditions. All five
+Version 1.0 recorded the Task 2 decisions and verified M2 identifiers/conditions. All five
 critical UCs and all seven USs, including US-07, are traced in the companion matrix.
 Existing behavior was checked against the source and tests; it is not labeled a working
 full-stack implementation. Architecture questions remain open. No application, test,
 configuration, database or AutoNote changes are part of this baseline.
+
+### Revision history
+
+| Version | Change and authority | Review boundary |
+| --- | --- | --- |
+| 1.0 | Task 2 baseline established at `e310d1b`, following cleanup `5833fc5`; M2 provenance and NFR conditions verified. | Original Approved Working Baseline; no backend implementation or additional formal team approval asserted. |
+| 1.1 | Task 3 explicitly confirms AD01-D01/D02/D05/D09. Refine FR-01/02/03/05 and AC-02/04/05/07/08 implications; partially resolve Q-01/02/04 and clarify Q-05. | Documentation revision prepared for review; only supplied decisions are confirmed. AD-01 proposals remain unapproved. Original UC/US/NFR IDs, numerical NFR conditions, source fingerprint and deferred scope are unchanged. |
+| 1.2 | Task 4 confirms AD02-D01 through AD02-D06, refines affected FR/AC/Q entries, and verifies M3 evolution in AD-02. | Prepared for Review; clarifies confirmed requirements versus proposed designs and independent practice Result. Original UC/US/NFR meanings and numerical conditions preserved; no formal team approval asserted. |

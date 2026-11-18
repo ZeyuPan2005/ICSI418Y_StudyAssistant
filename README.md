@@ -51,9 +51,11 @@ fictional fixtures. Deterministic failure controls remain available for developm
 | `tests/browser.mjs` | Playwright workflow, navigation, persistence and keyboard checks |
 | `index.html`, `vite.config.js`, `package.json`, `package-lock.json` | Frontend entry, build configuration and locked dependencies |
 | `AutoNote/` | Preserved legacy Python code for later AI/backend evaluation; outside the frontend runtime |
-| [Requirements baseline](docs/REQUIREMENTS_BASELINE.md) | Approved Working Baseline v1.0, original authority, phased scope and acceptance criteria |
+| [Requirements baseline](docs/REQUIREMENTS_BASELINE.md) | Baseline v1.2 revision prepared for review; confirmed requirements, original authority and acceptance criteria |
 | [Requirements traceability](docs/REQUIREMENTS_TRACEABILITY.md) | Original UC/US/NFR identifiers mapped to Phase 1 requirements, existing screens and proposed tests |
-| [Architecture plan](docs/ARCHITECTURE_PLAN.md) | Preliminary modular monolith direction, AD-01 through AD-04 and unresolved design questions |
+| [Component architecture](docs/COMPONENT_ARCHITECTURE.md) | AD-01 design completed for review: module responsibilities, workflows, confirmed decisions and unresolved proposals |
+| [Data model](docs/DATA_MODEL.md) | AD-02 Prepared for Review: ten entities, ERD, milestone evolution and proposed persistence/recovery design |
+| [Architecture plan](docs/ARCHITECTURE_PLAN.md) | AD-01/AD-02 review handoff and remaining AD-03/AD-04 work |
 | [Design assumptions](docs/design-assumptions.md) | Existing requirement decisions and prototype conventions |
 | [AutoNote import review](docs/AUTONOTE_IMPORT_REVIEW.md) | Legacy module relationships, security findings and known limitations |
 | [Historical archive](docs/archive/milestone-3/README.md) | Prior planning, UI-to-requirement mapping and manual acceptance walkthrough |
@@ -124,7 +126,7 @@ The frontend setup above does not install or execute AutoNote.
 
 ## Planned full-stack development
 
-The [Requirements Baseline v1.0](docs/REQUIREMENTS_BASELINE.md) records the approved working
+The [Requirements Baseline v1.2](docs/REQUIREMENTS_BASELINE.md) records the approved working
 scope. Phase 1 will use Express, MongoDB Atlas, protected local server storage and a
 deterministic backend question bank with topic matching. It must operate without Python
 or external AI services and disclose that questions come from predefined content. Real
@@ -134,9 +136,16 @@ outcomes, not completed features.
 Phase 2 may add validated transcription, lecture-note or AI quiz-generation capabilities.
 AutoNote remains optional and unintegrated. The [traceability matrix](docs/REQUIREMENTS_TRACEABILITY.md)
 connects the original workflows to proposed acceptance tests. The preliminary
-[architecture plan](docs/ARCHITECTURE_PLAN.md) identifies AD-01 through AD-04; authentication
-strategy, material readiness, upload limits, matching and submission idempotency remain
-open design choices. No architecture or database schema is implemented by these documents.
+[architecture plan](docs/ARCHITECTURE_PLAN.md) tracks the design work. The
+[AD-01 component design](docs/COMPONENT_ARCHITECTURE.md) is completed for review and records
+confirmed manual course-topic association, trusted preassigned membership, exactly 10
+distinct regular questions and 1-10 distinct targeted-practice questions. The
+[AD-02 data model](docs/DATA_MODEL.md) is Prepared for Review, with six confirmed refinements:
+global role plus membership, course offerings, at least one Topic at upload, topic-balanced
+selection, one Attempt per Quiz with preserved history, and date-only deadlines. It records
+M3 design evolution and proposed snapshots, recovery and submission consistency. Physical
+designs, authentication, upload limits, exact balancing, retry mechanics and the course
+timezone remain subject to review. No backend or database schema is implemented.
 
 ## Collaboration and contributions
 
