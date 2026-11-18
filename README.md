@@ -56,7 +56,8 @@ fictional fixtures. Deterministic failure controls remain available for developm
 | [Component architecture](docs/COMPONENT_ARCHITECTURE.md) | AD-01 design completed for review: module responsibilities, workflows, confirmed decisions and unresolved proposals |
 | [Data model](docs/DATA_MODEL.md) | AD-02 Prepared for Review: ten entities, ERD, milestone evolution and proposed persistence/recovery design |
 | [API contract](docs/API_CONTRACT.md) | AD-03 Prepared for Review: confirmed decisions, proposed endpoints/DTOs, authorization and recovery |
-| [Architecture plan](docs/ARCHITECTURE_PLAN.md) | AD-01/AD-02/AD-03 review handoff and pending AD-04 work |
+| [Implementation plan](docs/IMPLEMENTATION_PLAN.md) | AD-04 Prepared for Review: incremental vertical slices, dual-adapter migration, blocking decisions and verification gates; no IMP work started |
+| [Architecture plan](docs/ARCHITECTURE_PLAN.md) | AD-01 through AD-04 design review handoffs; implementation remains future work |
 | [Design assumptions](docs/design-assumptions.md) | Existing requirement decisions and prototype conventions |
 | [AutoNote import review](docs/AUTONOTE_IMPORT_REVIEW.md) | Legacy module relationships, security findings and known limitations |
 | [Historical archive](docs/archive/milestone-3/README.md) | Prior planning, UI-to-requirement mapping and manual acceptance walkthrough |
@@ -150,6 +151,11 @@ confirm server-side cookie sessions, trusted provisioning, synchronous uploads, 
 generation replay, Start-time Attempts, Regular-only practice sources, per-course IANA calendars,
 revision conflicts, CSRF/Origin protection and unified errors. Exact limits, algorithms,
 libraries and recovery mechanics remain open. No backend or database schema is implemented.
+
+The [AD-04 implementation plan](docs/IMPLEMENTATION_PLAN.md) is Prepared for Review.
+Confirmed delivery uses small vertical slices and preserves Demo mode while adding a separate
+real API client and async state layer. IMP-01 through IMP-07 are future tasks; foundation
+decisions and prerequisite evidence must be reviewed before implementation starts.
 
 ## Collaboration and contributions
 

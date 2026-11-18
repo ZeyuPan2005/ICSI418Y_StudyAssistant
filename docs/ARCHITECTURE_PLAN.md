@@ -2,7 +2,7 @@
 
 **Direction:** Modular Monolith + Future AI Service
 **Requirements reference:** [Requirements Baseline v1.2](REQUIREMENTS_BASELINE.md)
-**Status:** AD-01 component design, AD-02 data model and AD-03 API contract **Prepared for Review**; AD-04 pending. Unresolved proposals are not approved designs.
+**Status:** AD-01 components, AD-02 data, AD-03 API contract and AD-04 implementation plan **Prepared for Review**; IMP work not started. Unresolved proposals are not approved designs.
 **Date:** 2026-11-18
 
 ## Purpose and boundaries
@@ -56,7 +56,7 @@ The future AI service is optional and absent from the Phase 1 dependency path.
 
 ## Architecture work packages
 
-AD-01, AD-02 and AD-03 documentation are prepared for review. AD-04 is the next design task;
+AD-01 through AD-04 documentation is prepared for review; IMP implementation is future work, and
 none of the architecture is implemented by these documentation changes.
 Their deliverables and review questions are proposed; team member assignments and dates
 remain open. Requirement definitions are not repeated here.
@@ -66,7 +66,7 @@ remain open. Requirement definitions are not repeated here.
 | AD-01 Component Architecture | [Completed design document for review](COMPONENT_ARCHITECTURE.md): diagrams, module ownership, workflows, invariants, decisions/proposals and handoff | FR-01 through FR-07 mapping, all original NFRs, AI independence and distinction between confirmed decisions and unresolved proposals; not implementation approval | Baseline v1.2 preserves four Task 3 and adds six Task 4 confirmations; unresolved design feeds AD-03 |
 | AD-02 Data Model | [Prepared for Review](DATA_MODEL.md): ten entities, ERD, proposed fields/indexes/snapshots, upload recovery and atomic submission; verified M2/M3 mapping and disclosed evolution | Six confirmed AD-02 decisions; at most one Attempt per Quiz, exactly one Result per submitted Attempt; independent practice history, offering isolation, derived alerts and explicit storage/transaction limits | Baseline v1.2 and AD-01 responsibilities; physical design proposals require review with AD-03 |
 | AD-03 API Contract | [Prepared for Review](API_CONTRACT.md): ten confirmed decisions, 30 proposed endpoints, DTOs, session/CSRF rules, revision conflicts and operation recovery | Trace all FRs and original UCs/USs/NFR limits; safe preview, independent practice and definite/unknown persistence outcomes | AD-01/AD-02 foundation; Task 6 subsequent confirmations; physical mechanisms and exact DTO/status choices await review |
-| AD-04 Implementation Plan | Reviewed increments, dependencies, migration from mocks, testing strategy and evidence/release gates | Assign AC-01 through AC-14 and NFV-01 through NFV-06 to verification work; identify AI-independent integration checks, NFR studies, rollback/recovery needs and scope decisions | Outputs of AD-01/02/03 plus resolution or explicit deferral of blocking questions |
+| AD-04 Implementation Plan | [Prepared for Review](IMPLEMENTATION_PLAN.md): small vertical slices, dual-adapter async migration, blocking gates, traceability and task-specific verification/DoD | Assign AC-01 through AC-14 and NFV-01 through NFV-06 to verification work; identify AI-independent integration checks, NFR studies, rollback/recovery needs and scope decisions | Outputs of AD-01/02/03 plus resolution or explicit deferral of blocking questions |
 
 AD-02 fields/indexes remain proposals. Subsequent AD03-D01 confirms server-side cookie
 sessions; AD03-D02 through D10 settle further behavior in the API contract. AD-04 should produce
@@ -154,4 +154,14 @@ as later refinements, preserving AD-01/AD-02 historical decisions. Paths, DTOs, 
 headers, session/CSRF libraries, transaction mechanisms and detailed selection/recovery
 policies remain proposals or open choices. See its [traceability](API_CONTRACT.md#11-requirements-components-and-data-traceability)
 and [implementation gates](API_CONTRACT.md#12-open-choices-and-implementation-handoff).
-AD-04 remains pending; Prepared for Review asserts no implementation or formal approval.
+AD-04 is now [Prepared for Review](IMPLEMENTATION_PLAN.md); that status asserts no implementation or formal approval.
+
+## AD-04 review handoff
+
+[Implementation Plan v1.0](IMPLEMENTATION_PLAN.md) records Confirmed AD04-D01 incremental
+vertical slices and AD04-D02 dual-adapter migration. IMP-01 through IMP-07 are decomposed
+into reviewable future tasks; IMP-06A Deadlines depends on IMP-01, while IMP-06B Teacher
+review depends on IMP-04. [Blocking gates](IMPLEMENTATION_PLAN.md#5-blocking-decision-register)
+retain technical choices as Open/Proposed. The [first-task handoff](IMPLEMENTATION_PLAN.md#8-first-implementation-handoff-and-future-prompt-structure)
+recommends IMP-01A only after its prerequisite decisions. No IMP work, formal team approval
+or runtime validation is asserted by completing the planning document.
