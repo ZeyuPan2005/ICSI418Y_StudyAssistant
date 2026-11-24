@@ -2,7 +2,7 @@
 
 **Two separate HTTP boundaries:** This file documents **React → Express** only. Express calls a **private Python AI HTTP service** using the [internal wire protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md); Python is not a browser API. All Python outputs return to Express for validation and persistence.
 
-**Status:** PROPOSED v0.1 for all-five team freeze; routes are **not implemented**. **Scope:** US-01/02/03/05/06. This is the short **implementation-facing** subset of [AD-03 full Phase 1 API](../API_CONTRACT.md); it is not an automatic override of AD-03. Confirm any differences in a reviewed decision record before coding.
+**Status:** PROPOSED v0.2 for all-five team freeze; routes are **not implemented**. **Scope:** US-01/02/03/05/06. This is the short **implementation-facing** subset of [AD-03 full Phase 1 API](../design/API_CONTRACT.md); it is not an automatic override of AD-03. Confirm any differences in a reviewed decision record before coding.
 
 ## Common conventions to approve
 
@@ -48,16 +48,16 @@ There is **no browser → AI model** endpoint. Express authenticates/authorizes,
 `Deadline`: `{deadlineId,courseId,title,type,dueDate,upcoming}` (server derives `upcoming`).
 
 - Upload: multipart `file` actual bytes + JSON-encoded `topicIds`. A successful material upload stores **real bytes and metadata**, but **does not automatically mean its AI conversion succeeded**. Expose status honestly (e.g. `stored`, `processing`, `ready`, `failed` after team freeze). Invalid supported file, zero bytes, foreign Topics, disk/DB failure return safe error.
-- Processing: agree whether `POST .../process` is explicit and synchronous, or an operation with later GET status. AI on large audio can take longer than HTTP timeout; do not claim a background queue exists yet.
+- Processing: the **recommended development path** is explicit `POST .../process` with bounded synchronous conversion for small files, clear status on timeout, and no assumed queue. Team must approve limits/timeouts and status before implementation. AI on large audio can take longer than HTTP timeout; do not claim a background queue exists yet.
 - Generate: requires authorized material and converted content; request body `{}` plus reviewed operation ID. Returns ten distinct validated **Quiz snapshots** with safe preview. **No Attempt until Start.** If conversion/model/validation fails, no partial Quiz. Actual questions must be grounded in source content; a predefined-bank fallback must never be mislabeled AI.
 - Start: `POST /api/quizzes/:quizId/attempts` body `{}` → one Draft, repeated Start returns same Draft.
 - Draft: `PUT .../draft` body `{"expectedRevision":0,"answers":{"item-1":"opt-a"}}`. Stale revisions reject; client retains pending answers.
-- Submit: `POST .../submit` includes expectedRevision + all question answers; Backend C compares with stored snapshot keys, persists **one** immutable Result, returns score and missed-item feedback. AI explanation is separate and **cannot change score**.
+- Submit: `POST .../submit` includes expectedRevision + all question answers; Backend C compares with stored snapshot keys, persists **one** immutable Result, returns score and missed-item feedback. AI explanation is separate, optional, **cannot change score**, and must not silently imply a background worker exists.
 - Deadlines: Teacher writes `{"title":"Homework 2","type":"Homework","dueDate":"2026-11-28"}`; Student sees future list in course timezone, day 0–7 Upcoming, day 8+ visible/unmarked; edited/deleted reminders disappear.
 
 ## Explicit unresolved choices and contradictions
 
 1. **US-02 content grounding:** Original M2 requires questions based on the uploaded lecture; old AD-03 assumes predefined bank (not semantic content analysis). The selected path is Express → private Python conversion/quiz HTTP → Express validation/persistence; provider/privacy/source-grounding and output review still need sign-off. Modify AD-03/04 explicitly once accepted.
-2. **Processing trigger & latency:** upload-triggered vs explicit `process`; sync versus queued; what constitutes ready. Default endpoint above is a **proposal**, not a working route.
+2. **Processing trigger & latency:** explicit bounded synchronous `process` is **recommended for this implementation increment**; formalize size/duration/timeout and `stored/processing/ready/failed` status before building. The endpoint is proposed, not implemented.
 3. **AI feedback lifecycle:** Result grade must survive AI timeout; choose separate versioned `ResultFeedback` or associated record rather than editing immutable Result. `ai-feedback` GET remains optional.
 4. **Contracts to freeze:** Session/CSRF/cookies, exact error codes, DTO fields, file limits/MIME, generation/upload idempotency, course zone, persistent unique IDs and indexes. Use [AI contract](../backend/ai/AI_MODEL_CONTRACT.md) and [Persistence contract](../database/PERSISTENCE_CONTRACT.md).

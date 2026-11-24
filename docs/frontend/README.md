@@ -5,9 +5,9 @@
 **Owner:** one React developer. **Selected stories:** US-01/02/03/05/06. Current `client/` is a functioning Demo; the Express backend does not yet exist.
 
 ## Read in order
-1. [Team responsibilities](../TEAM_ASSIGNMENTS.md) and [acceptance criteria](../ACCEPTANCE_MATRIX.md).
+1. [Team responsibilities](../team/TEAM_ASSIGNMENTS.md) and [acceptance criteria](../requirements/ACCEPTANCE_MATRIX.md).
 2. [Short HTTP API contract](../contracts/HTTP_API.md) — **all common conventions**, then relevant Material, Quiz/Attempt/Result and Deadline routes.
-3. [AD-04 `2 migration analysis](../IMPLEMENTATION_PLAN.md#2-inspected-implementation-realities-and-frontend-migration) — separate Demo and real async context, no fixture fallback.
+3. [AD-04 Section 2 migration analysis](../design/IMPLEMENTATION_PLAN.md#2-inspected-implementation-realities-and-frontend-migration) — separate Demo and real async context, no fixture fallback.
 4. Existing `client/src/App.jsx`, `client/src/screens/`, `client/src/services/demo.js`, `client/src/state/Demo.jsx`, `client/tests/`.
 
 ## Your delivery

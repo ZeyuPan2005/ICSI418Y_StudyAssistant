@@ -1,6 +1,6 @@
 # Requirements Baseline
 
-> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](DECISIONS.md), [private AI protocol](backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
+> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](../team/DECISIONS.md), [private AI protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](../contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
 
 | Document control | Value |
 | --- | --- |
@@ -13,7 +13,7 @@
 | Revision review | AD-01/AD-02 revision prepared for review on 2026-11-17 against `e310d1b`; existing AD-01 work retained and architecture proposals remain unapproved. |
 
 
-> Subsequent refinement (Task 6, 2026-11-18): [AD-03 decisions AD03-D01 through D10](API_CONTRACT.md#1-confirmed-decisions-and-review-boundary)
+> Subsequent refinement (Task 6, 2026-11-18): [AD-03 decisions AD03-D01 through D10](../design/API_CONTRACT.md#1-confirmed-decisions-and-review-boundary)
 > now confirm cookie sessions/trusted provisioning, synchronous upload, generation replay,
 > Start-time Attempt creation, Regular-only practice sources, course-configured IANA calendar
 > policy, revision conflicts and CSRF/Origin/error behavior. Earlier open/proposed wording
@@ -28,9 +28,9 @@ the five critical use cases and seven original user stories and introduces Phase
 implementation requirements without renumbering the original requirements.
 
 This document defines required outcomes. The [traceability matrix](REQUIREMENTS_TRACEABILITY.md)
-connects them to existing screens and proposed tests; the [architecture plan](ARCHITECTURE_PLAN.md)
-organizes subsequent design work. The [AD-01 component design](COMPONENT_ARCHITECTURE.md)
-and [AD-02 data model](DATA_MODEL.md) are prepared for review, distinguishing confirmed
+connects them to existing screens and proposed tests; the [architecture plan](../archive/ARCHITECTURE_PLAN.md)
+organizes subsequent design work. The [AD-01 component design](../design/COMPONENT_ARCHITECTURE.md)
+and [AD-02 data model](../design/DATA_MODEL.md) are prepared for review, distinguishing confirmed
 decisions from proposals. None of these documents implements a backend or finalizes schemas,
 API routes, authentication mechanisms or deployment details.
 
@@ -40,12 +40,12 @@ API routes, authentication mechanisms or deployment details.
 | --- | --- |
 | M2: submitted Milestone 2 report, local copy `Team01- Milestone 2- Report.pdf` | Original requirements authority. Section 1, p. 1: actors and open questions; section 2, pp. 1-2: US-01 through US-07; section 3, pp. 2-4: UC-01 through UC-05; section 4, p. 4: NFR-01 through NFR-06. Read and checked for this baseline. |
 | Task 2: Establish Requirements Baseline v1.0 | Explicitly approved phased strategy, D-01 through D-03 and Phase 1 requirements. These are new development decisions, not quotations from M2. |
-| Task 3: AD-01 Component Architecture | Explicit confirmations AD01-D01, AD01-D02, AD01-D05 and AD01-D09, recorded in the [component design](COMPONENT_ARCHITECTURE.md#2-confirmed-architecture-decisions). Other architecture details remain proposals or open questions. |
-| Task 4: AD-02 Data Model | Explicit confirmations AD02-D01 through AD02-D06; [milestone audit](DATA_MODEL.md#2-milestone-consistency-and-design-evolution) verifies original M2/M3 and discloses the retake-policy and Concept-to-Topic changes. Physical designs remain proposed. |
+| Task 3: AD-01 Component Architecture | Explicit confirmations AD01-D01, AD01-D02, AD01-D05 and AD01-D09, recorded in the [component design](../design/COMPONENT_ARCHITECTURE.md#2-confirmed-architecture-decisions). Other architecture details remain proposals or open questions. |
+| Task 4: AD-02 Data Model | Explicit confirmations AD02-D01 through AD02-D06; [milestone audit](../design/DATA_MODEL.md#2-milestone-consistency-and-design-evolution) verifies original M2/M3 and discloses the retake-policy and Concept-to-Topic changes. Physical designs remain proposed. |
 | Historical Milestone 3 assumptions (maintained in the team's local archive) | Prototype conventions; do not override the current baseline or later explicit decisions. |
 | Historical Milestone 3 Phase A plan, UI mapping and demo checklist (local team archive, no longer in this repository) | Earlier workflow/UI references; not proof of production compliance. |
-| [README](../README.md), [frontend services](../client/src/services/demo.js), [fixtures](../client/src/data/fixtures.js), [service tests](../client/tests/services.test.js), [browser tests](../client/tests/browser.mjs) | Evidence of current prototype behavior only. |
-| [AutoNote import review](AUTONOTE_IMPORT_REVIEW.md) | Legacy implementation findings and security limitations, not a functional specification or verified backend. |
+| [README](../../README.md), [frontend services](../../client/src/services/demo.js), [fixtures](../../client/src/data/fixtures.js), [service tests](../../client/tests/services.test.js), [browser tests](../../client/tests/browser.mjs) | Evidence of current prototype behavior only. |
+| [AutoNote import review](../archive/AUTONOTE_IMPORT_REVIEW.md) | Legacy implementation findings and security limitations, not a functional specification or verified backend. |
 
 The five-page M2 PDF is outside this repository, at `Project/Milestone/2/` in the local
 course workspace. Its SHA-256 is
@@ -111,7 +111,7 @@ architecture plan. Task 3 confirms the following refinements without approving a
 | AD01-D05 | Successful regular quizzes contain exactly 10 distinct eligible questions; fewer than 10 fails without a partial Quiz or invalidating uploaded material. | FR-03 |
 | AD01-D09 | Successful targeted practice contains 1-10 distinct eligible questions on missed topics, excluding source-quiz questions; zero eligible questions or a perfect source creates no practice. Separate linked records preserve the original record set. | FR-05 |
 
-Task 4 confirms the following business refinements; [AD-02](DATA_MODEL.md) records their
+Task 4 confirms the following business refinements; [AD-02](../design/DATA_MODEL.md) records their
 implications and the inspected M3 evolution without approving physical designs.
 
 | ID | Confirmed refinement | Affected requirements |
@@ -261,7 +261,7 @@ target is approved here.
 
 These are domain concepts, not database collections or schemas. Field definitions,
 relationships/cardinalities, indexes, document boundaries and persistence strategies are
-proposed in [AD-02](DATA_MODEL.md), prepared for review. Workflow references do not approve
+proposed in [AD-02](../design/DATA_MODEL.md), prepared for review. Workflow references do not approve
 their storage representation.
 
 | Entity | Required business meaning |

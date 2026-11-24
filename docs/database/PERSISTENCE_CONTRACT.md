@@ -2,7 +2,7 @@
 
 **Python isolation:** The independent Python service never connects to Atlas. Express receives model results over private HTTP and calls approved repositories to store converted content, Quiz snapshots and optional ResultFeedback. [Internal protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md).
 
-**Status:** Proposed; physical collections, indexes, transactions and method signatures require Database + domain-owner review. See [full AD-02](../DATA_MODEL.md).
+**Status:** Proposed; physical collections, indexes, transactions and method signatures require Database + domain-owner review. See [full AD-02](../design/DATA_MODEL.md).
 
 ## Ownership map
 

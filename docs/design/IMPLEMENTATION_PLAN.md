@@ -1,6 +1,6 @@
 # AD-04 Phase 1 Implementation Plan
 
-> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](DECISIONS.md), [private AI protocol](backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
+> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](../team/DECISIONS.md), [private AI protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](../contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
 
 | Document control | Value |
 | --- | --- |
@@ -9,7 +9,7 @@
 | Status | **Prepared for Review** |
 | Scope | Documentation and implementation planning only; no IMP work started |
 | Repository inspected | `main` at `144b13f`, clean before AD-04 edits |
-| Sources | [Baseline v1.2](REQUIREMENTS_BASELINE.md), [traceability](REQUIREMENTS_TRACEABILITY.md), [AD-01 components](COMPONENT_ARCHITECTURE.md), [AD-02 data](DATA_MODEL.md), [AD-03 contract](API_CONTRACT.md), [architecture plan](ARCHITECTURE_PLAN.md), [README](../README.md) |
+| Sources | [Baseline v1.2](../requirements/REQUIREMENTS_BASELINE.md), [traceability](../requirements/REQUIREMENTS_TRACEABILITY.md), [AD-01 components](COMPONENT_ARCHITECTURE.md), [AD-02 data](DATA_MODEL.md), [AD-03 contract](API_CONTRACT.md), [architecture plan](../archive/ARCHITECTURE_PLAN.md), [README](../../README.md) |
 | Review boundary | Two supplied decisions below are Confirmed. Task decomposition, file layout, interfaces and technical options are recommended proposals; no formal team approval or runtime success is asserted. |
 
 ## 1. Confirmed decisions and delivery strategy
@@ -37,15 +37,15 @@ All tests and implementation paths below are future work unless explicitly calle
 
 | Existing path / evidence | Observed assumption | Migration implication |
 | --- | --- | --- |
-| [package.json](../client/package.json) | React/Vite scripts and Demo tests; no Express/Atlas backend dependencies or server scripts | Backend structure/config/scripts require scoped future additions; none exist by virtue of AD documents |
-| [src/App.jsx](../client/src/App.jsx) | `useDemo()`, synchronous `session()` and render-time try/catch access/resource reads; uses `current.id` after choosing an assigned course | Explicit async session/loading/error/unauthenticated/no-course states; do not dereference a nonexistent course for a newly registered Student |
-| [src/state/Demo.jsx](../client/src/state/Demo.jsx) | Module-level `createDemo(window.localStorage)`, `useSyncExternalStore`, storage events and timer-based refresh | Keep Demo provider separate; real mode needs async query/state lifecycle, not promises inserted into sync selectors |
-| [src/services/demo.js](../client/src/services/demo.js) | Synchronous local save/notify; upload stores metadata; generation allocates Quiz and Attempt together; grading reads fixtures | Real API is server-authoritative; generation creates no Attempt, Start does; never reuse client grading or simulated storage as persistence |
-| [src/data/fixtures.js](../client/src/data/fixtures.js) | Fictional users/memberships, browser-local date comparisons, five regular and two practice questions per Topic | No production identity source; real bank must support ten questions for a single selected Topic; course calendar comes from backend |
-| [Materials.jsx](../client/src/screens/Materials.jsx) | Direct fixture import, synchronous upload/generate and simulated timer; no manual Topic selector | Add real topic selection/bytes/status/recovery branch; distinguish stored from eligible and preserve Demo behavior |
-| [Quizzes.jsx](../client/src/screens/Quizzes.jsx) | Render-time Quiz/Result reads; `quiz.attempt.answers` assumed present, immediate save/submit and navigation; fixture option indexes and `rows/missed` feedback | Async preview before Attempt, explicit Start, local pending answers, snapshot/option IDs, revision conflicts and acknowledged navigation |
-| [Dashboard.jsx](../client/src/screens/Dashboard.jsx), [Deadlines.jsx](../client/src/screens/Deadlines.jsx) | Render-time list calls; synchronous management and embedded submitted answer detail | Independently load panels, handle unavailable workflows during migration, invalidate/refetch after mutations; course-local date DTOs |
-| [tests/services.test.js](../client/tests/services.test.js), [tests/browser.mjs](../client/tests/browser.mjs) | Demo service assertions, localStorage inspection, role switching and simulated interruption | Preserve as Demo regressions; add separate future real API/Atlas/browser suites with persisted-state assertions, never relabel Demo tests as backend evidence |
+| [package.json](../../client/package.json) | React/Vite scripts and Demo tests; no Express/Atlas backend dependencies or server scripts | Backend structure/config/scripts require scoped future additions; none exist by virtue of AD documents |
+| [src/App.jsx](../../client/src/App.jsx) | `useDemo()`, synchronous `session()` and render-time try/catch access/resource reads; uses `current.id` after choosing an assigned course | Explicit async session/loading/error/unauthenticated/no-course states; do not dereference a nonexistent course for a newly registered Student |
+| [src/state/Demo.jsx](../../client/src/state/Demo.jsx) | Module-level `createDemo(window.localStorage)`, `useSyncExternalStore`, storage events and timer-based refresh | Keep Demo provider separate; real mode needs async query/state lifecycle, not promises inserted into sync selectors |
+| [src/services/demo.js](../../client/src/services/demo.js) | Synchronous local save/notify; upload stores metadata; generation allocates Quiz and Attempt together; grading reads fixtures | Real API is server-authoritative; generation creates no Attempt, Start does; never reuse client grading or simulated storage as persistence |
+| [src/data/fixtures.js](../../client/src/data/fixtures.js) | Fictional users/memberships, browser-local date comparisons, five regular and two practice questions per Topic | No production identity source; real bank must support ten questions for a single selected Topic; course calendar comes from backend |
+| [Materials.jsx](../../client/src/screens/Materials.jsx) | Direct fixture import, synchronous upload/generate and simulated timer; no manual Topic selector | Add real topic selection/bytes/status/recovery branch; distinguish stored from eligible and preserve Demo behavior |
+| [Quizzes.jsx](../../client/src/screens/Quizzes.jsx) | Render-time Quiz/Result reads; `quiz.attempt.answers` assumed present, immediate save/submit and navigation; fixture option indexes and `rows/missed` feedback | Async preview before Attempt, explicit Start, local pending answers, snapshot/option IDs, revision conflicts and acknowledged navigation |
+| [Dashboard.jsx](../../client/src/screens/Dashboard.jsx), [Deadlines.jsx](../../client/src/screens/Deadlines.jsx) | Render-time list calls; synchronous management and embedded submitted answer detail | Independently load panels, handle unavailable workflows during migration, invalidate/refetch after mutations; course-local date DTOs |
+| [tests/services.test.js](../../client/tests/services.test.js), [tests/browser.mjs](../../client/tests/browser.mjs) | Demo service assertions, localStorage inspection, role switching and simulated interruption | Preserve as Demo regressions; add separate future real API/Atlas/browser suites with persisted-state assertions, never relabel Demo tests as backend evidence |
 
 Preserve `/c/:course`, existing screen paths, UI-01 through UI-08 and UI-01T where compatible.
 Authentication screens are supporting new UI, not invented original milestone screen IDs.
@@ -313,7 +313,7 @@ rollout remain review choices, not a mandate to run schema changes in this task.
 
 ## 6. Verification and requirements traceability
 
-This plan preserves the [baseline acceptance criteria](REQUIREMENTS_BASELINE.md#proposed-acceptance-criteria)
+This plan preserves the [baseline acceptance criteria](../requirements/REQUIREMENTS_BASELINE.md#proposed-acceptance-criteria)
 and original identifiers/conditions. The matrix is a future evidence allocation, not test
 results. Security/course ownership (AC-11), AI independence (AC-12), frontend preservation
 (AC-13) and automated critical failures (AC-14) apply throughout each relevant slice, not

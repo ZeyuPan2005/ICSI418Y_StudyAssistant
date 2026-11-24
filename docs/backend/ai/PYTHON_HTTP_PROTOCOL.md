@@ -1,6 +1,6 @@
 # Private HTTP protocol — Express ↔ Python AI service
 
-**Status:** implementation handoff **proposal v0.2**. **Architecture fixed:** private HTTP call from Express to a separate Python process; wire fields, framework, limits and operational parameters require A/B/C sign-off. This is **not** a browser-facing API. Backend B implements this protocol; Backend A supplies shared secure configuration; Backend C calls the Express-side AI client functions.
+**Status:** implementation handoff **proposal v0.2**. **Architecture fixed:** private HTTP call from Express to a separate Python process; wire fields, framework, limits and operational parameters require A/B/C sign-off. This is **not** a browser-facing API. Backend B implements this protocol; Backend A supplies shared HTTP client configuration/security; Backend B owns Python endpoints and Express-side typed client wrappers; Backend C invokes these wrappers.
 
 ## Local processes and network
 
@@ -13,7 +13,7 @@
 
 `9000` and `8001` are provisional development ports, **not** deployed endpoints or implemented services. Vite proxies `/api` → Express, and Express calls Python via `AI_INTERNAL_BASE_URL` such as `http://127.0.0.1:8001`. Python must not be exposed via Vite proxy, CORS wildcard, browser JS or a public tunnel. Cross-host deployment requires private TLS/network and service-to-service authentication review.
 
-**Recommended transport:** FastAPI + Uvicorn in a dedicated Python environment (version/packages frozen before code), with `httpx` or equivalent server-side HTTP client in Express; libraries not yet installed/committed. Express owns `AI_INTERNAL_BASE_URL`, `AI_INTERNAL_SHARED_KEY` and outbound request timeout config. Python owns the matching service key and model provider keys. Missing keys fail startup, never silently disable internal auth.
+**Recommended transport:** FastAPI + Uvicorn in a dedicated Python environment (version/packages frozen before code), with Node.js `fetch` / Undici or an equivalent Node-compatible HTTP client in Express; libraries not yet installed/committed. Express owns `AI_INTERNAL_BASE_URL`, `AI_INTERNAL_SHARED_KEY` and outbound request timeout config. Python owns the matching service key and model provider keys. Missing keys fail startup, never silently disable internal auth.
 
 ## Shared headers and failure envelope
 
@@ -142,5 +142,7 @@ Python cannot grade, change stored Answer/Result/score or write directly to Mong
 3. Generated Quiz count 9/10/11, duplicate question, correctOptionId not in options, foreign Topics, unrelated source quote ⇒ invalid output blocks database writes.
 4. Submit grades from **frozen stored answer keys** even if Python is down; duplicate submit cannot create two Results; bad or late AI explanation cannot mutate Result.
 5. Restart/refresh: accepted Material bytes and metadata persist; converted content/Quiz snapshots/Results remain authorized and consistent.
+
+**Processing lifecycle recommendation (not yet team-approved):** use an explicit `POST /api/courses/:courseId/materials/:materialId/process` with a bounded **synchronous** Python conversion call for small supported inputs; return a clear timeout/failure status while retaining a valid uploaded Material. No worker/queue is currently implemented. AI feedback is optional and should not block the persisted score; either a separate explicit feedback action or a bounded request with clear retry/retrieval status must be selected before coding.
 
 **Pending team freeze:** payload byte limits, maximum audio duration, timeout thresholds, sync vs queue, provider selection, cost/privacy, model responses to unknown source content, auth key management, exact status mappings and versioning.

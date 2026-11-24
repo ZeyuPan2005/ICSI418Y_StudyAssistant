@@ -1,6 +1,6 @@
 # Server (planned)
 
-**Selected integration:** Future Express public app server calls a separate private Python HTTP AI service for Conversion, Quiz Generation and Feedback. Express validates output and persists through Atlas repositories. No Python/Express implementation exists yet. Read [AI contract](../docs/backend/ai/AI_MODEL_CONTRACT.md), [wire protocol](../docs/backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team roles](../docs/TEAM_ASSIGNMENTS.md).
+**Selected integration:** Future Express public app server calls a separate private Python HTTP AI service for Conversion, Quiz Generation and Feedback. Express validates output and persists through Atlas repositories. No Python/Express implementation exists yet. Read [AI contract](../docs/backend/ai/AI_MODEL_CONTRACT.md), [wire protocol](../docs/backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team roles](../docs/team/TEAM_ASSIGNMENTS.md).
 
 This directory is reserved for the Phase 1 Node.js/Express modular-monolith backend.
 
@@ -8,4 +8,4 @@ This directory is reserved for the Phase 1 Node.js/Express modular-monolith back
 
 Do not add placeholder endpoints or claim Atlas/session integration is working before the relevant IMP has been implemented and tested.
 
-See [AD-04 Implementation Plan](../docs/IMPLEMENTATION_PLAN.md) and [AD-03 API Contract](../docs/API_CONTRACT.md).
+See [AD-04 Implementation Plan](../docs/design/IMPLEMENTATION_PLAN.md) and [AD-03 API Contract](../docs/design/API_CONTRACT.md).

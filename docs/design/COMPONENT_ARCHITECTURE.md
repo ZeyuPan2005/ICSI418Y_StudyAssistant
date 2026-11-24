@@ -1,13 +1,13 @@
 # AD-01 Component Architecture
 
-> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](DECISIONS.md), [private AI protocol](backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
+> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](../team/DECISIONS.md), [private AI protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](../contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
 
 | Document control | Value |
 | --- | --- |
 | Document version | 1.1 |
 | Status | **Prepared for Review**; AD-01/AD-02 consistency revision, not implemented or formally approved as a whole |
 | Date | 2026-11-17 |
-| Requirements reference | [Requirements Baseline v1.2](REQUIREMENTS_BASELINE.md); Task 3 confirmations preserved and Task 4 refinements recorded in [AD-02](DATA_MODEL.md) |
+| Requirements reference | [Requirements Baseline v1.2](../requirements/REQUIREMENTS_BASELINE.md); Task 3 confirmations preserved and Task 4 refinements recorded in [AD-02](DATA_MODEL.md) |
 | Inspected repository | `e310d1b` before this documentation-only change |
 
 
@@ -32,11 +32,11 @@ original diagrams, with findings in the [milestone audit](DATA_MODEL.md#2-milest
 This revision does not assert formal team approval. Original requirement IDs and numerical
 NFR conditions remain unchanged.
 
-The [README](../README.md), historical Milestone 3 assumptions (team-local archive),
-[traceability matrix](REQUIREMENTS_TRACEABILITY.md), [architecture plan](ARCHITECTURE_PLAN.md),
-[AutoNote review](AUTONOTE_IMPORT_REVIEW.md), [mock services](../client/src/services/demo.js),
-[fixtures](../client/src/data/fixtures.js) and existing [service](../client/tests/services.test.js) and
-[browser tests](../client/tests/browser.mjs) describe the current prototype and its limits.
+The [README](../../README.md), historical Milestone 3 assumptions (team-local archive),
+[traceability matrix](../requirements/REQUIREMENTS_TRACEABILITY.md), [architecture plan](../archive/ARCHITECTURE_PLAN.md),
+[AutoNote review](../archive/AUTONOTE_IMPORT_REVIEW.md), [mock services](../../client/src/services/demo.js),
+[fixtures](../../client/src/data/fixtures.js) and existing [service](../../client/tests/services.test.js) and
+[browser tests](../../client/tests/browser.mjs) describe the current prototype and its limits.
 React/Vite is implemented; the Express, Atlas and file-storage behavior below is future work.
 
 **Status vocabulary:** Confirmed means explicitly supplied in Task 3/Task 4 (or an unchanged
@@ -342,7 +342,7 @@ transcription, note generation or AI questions. It remains optional, with output
 and C04/C06 ownership of application invariants. Python does not own account permissions,
 course membership or final grading history.
 
-The [AutoNote review](AUTONOTE_IMPORT_REVIEW.md) identifies incomplete dependencies,
+The [AutoNote review](../archive/AUTONOTE_IMPORT_REVIEW.md) identifies incomplete dependencies,
 import-time work, unsafe historical parsing/shell use and inconsistent data shapes.
 Preservation is not deployment approval. Future service transport, jobs, timeouts, privacy,
 cost controls and safe component selection remain Q-10; no queues, model or service endpoints
@@ -382,7 +382,7 @@ an otherwise valid stored material.
 | NFR-06 | C01/C06/C09 preserve answers through same-session disconnect/reconnect and reconcile ambiguous submission completion. |
 
 AC-12 verifies operation without AI; AC-13 preserves frontend workflow paths; AC-14 plans
-automated critical success/failure coverage. The [full matrix](REQUIREMENTS_TRACEABILITY.md)
+automated critical success/failure coverage. The [full matrix](../requirements/REQUIREMENTS_TRACEABILITY.md)
 retains the original screen/story mappings without declaring current mock tests sufficient.
 
 ## 15. Proposal evaluation and unresolved design handoff
