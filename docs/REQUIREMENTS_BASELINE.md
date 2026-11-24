@@ -1,5 +1,7 @@
 # Requirements Baseline
 
+> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](DECISIONS.md), [private AI protocol](backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
+
 | Document control | Value |
 | --- | --- |
 | Version | 1.2 |

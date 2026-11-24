@@ -1,5 +1,7 @@
 # Team responsibilities and integration handoffs
 
+**Chosen cross-service boundary:** Express calls an independently running **private Python AI HTTP service**. The Python process does not serve the browser and never writes Atlas. Review the [AI contract](backend/ai/AI_MODEL_CONTRACT.md) and [wire protocol](backend/ai/PYTHON_HTTP_PROTOCOL.md); wire details remain proposed.
+
 **Status:** Proposed for team review. **Organization:** 1 Frontend, 1 Database, 3 Backend. **Current selected stories:** US-01, US-02, US-03, US-05, US-06; do not count them Complete until verified against original M2 criteria.
 
 | Owner role | Owns | API / internal boundary | First independently reviewable delivery |
@@ -7,7 +9,7 @@
 | Frontend | `client/` React, real-mode API client/session, upload/conversion/generation/quiz/deadlines UI; retain Demo | Consumes `contracts/HTTP_API.md` | Real-mode shell, API error/loading states and UI→DTO mapping |
 | Database | Atlas dev/test, schemas, indexes, seed/provisioning support and persistence adapters; no business authorization | Provides `database/PERSISTENCE_CONTRACT.md` to Backend A/B/C | Proposed collections/indexes, seed, repository method shapes and DB smoke evidence |
 | Backend A — Express | Server bootstrap, config, sessions/CSRF, role/course access, deadline CRUD + Upcoming calculation, shared middleware/errors | Provides Auth/Course/Deadline HTTP routes and shared authentication middleware | Startup/health/proxy, authenticated Course list, verified role/course guards |
-| Backend B — AI & Materials | Protected material bytes intake/read/status, content conversion/transcription/notes, model adapter for quiz generation **and AI feedback** | Provides Material/Topic routes **and** `backend/ai/AI_MODEL_CONTRACT.md` to Backend C | Validated storage + conversion smoke, fixture AI responses and schema validation |
+| Backend B — AI & Materials | Protected material bytes intake/read/status, content conversion/transcription/notes, model adapter for quiz generation **and AI feedback** | Provides Material/Topic routes **and** Python HTTP service ([wire protocol](backend/ai/PYTHON_HTTP_PROTOCOL.md)) to Backend C | Validated storage + conversion smoke, fixture AI responses and schema validation |
 | Backend C — Learning workflow | Quiz request orchestration, safe preview, Start/Attempt/draft, deterministic grading, immutable Results; invoke Backend B's AI methods | Provides Quiz/Attempt/Result HTTP routes; consumes AI methods | Pure grading/validation tests and Quiz/Attempt/Result DTO integration |
 
 ## API owner — no overlapping route ownership
@@ -25,9 +27,9 @@
 
 ### What can progress in parallel
 
-1. **All five:** freeze shared headers/DTOs/errors, status lifecycle, AI transport (in-process Node SDK vs isolated Python sidecar), secret/data policy and persistence keys. Record owner/reviewer.
+1. **All five:** freeze shared headers/DTOs/errors, status lifecycle, Python HTTP wire schema, timeouts, ports, authentication and model privacy, secret/data policy and persistence keys. Record owner/reviewer.
 2. **A + DB:** bootstrap Express/auth, Atlas and trusted fixture Course membership. **Frontend:** create real API boundary while Demo tests remain working.
-3. **B:** implement content-conversion and model provider behind a fake adapter (no live model required initially). **C:** implement deterministic grading, lifecycle and tests using fixtures matching the AI contract.
+3. **B:** implement private Python HTTP endpoints using deterministic stubs before calling live models (no live model required initially). **C:** implement deterministic grading, lifecycle and tests using fixtures matching the AI contract.
 4. After auth/course base, **A + Frontend** finish deadlines independently of quiz. **B + Frontend** integrate materials; **B + C + Frontend** integrate generated Quiz.
 5. **All:** E2E tests + demo evidence for all five selected stories, including error/restart/authorization cases. Each owner provides a recorded contribution for the PDF.
 

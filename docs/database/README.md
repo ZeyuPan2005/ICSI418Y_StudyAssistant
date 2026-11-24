@@ -1,5 +1,7 @@
 # Database owner — read here
 
+**Architecture boundary:** Only Express repositories access Atlas. Python AI returns conversion/quiz/feedback over private HTTP to Express, which validates and stores it. Python has no MongoDB credentials. Read [Python protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md) for output artifacts.
+
 **Owner:** one Atlas/persistence developer. All five selected stories need durable data; you own the shared storage boundary, not individual HTTP routes.
 
 ## Read in order

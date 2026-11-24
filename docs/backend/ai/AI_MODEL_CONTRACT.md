@@ -1,125 +1,125 @@
-# AI model ↔ Express internal integration contract
+# AI ↔ Express contract — Python HTTP sidecar
 
-**Status:** v0.1 **TEAM REVIEW PROPOSAL**, not implemented and not yet reconciled with the earlier predefined-question-bank AD-03/04 plan. This contract describes the team's desired direction: **Express calls the AI model and receives structured results; Express validates, applies business rules, persists data, and responds to React.**
+**Architecture decision:** Express calls an **independently running private Python AI service over HTTP**, receives structured data, then Express validates, applies business rules, persists and answers React. This **transport choice is selected** for the team handoff; the actual endpoints and schemas below are **proposed v0.2** until A/B/C/Database/Frontend review. No server or Python service is currently implemented.
 
-**Owners:** Backend B owns the AI adapter/model prompts/transcription/conversion/validation-at-edge; Backend C owns Quiz/Attempt/Result business orchestration and immutable grading/Result state; Backend A owns shared authentication, authorization and transport; Database owns persistence interfaces. Frontend is a consumer of Express only.
+**Owners:** Backend A provides Express bootstrap, auth/session, course authorization and shared error handling; Backend B owns Express Material APIs, file processing and the private Python AI service; Backend C owns Express Quiz/Attempt/Result APIs, answer validation and deterministic grading; Database owns persistence and unique constraints. The Python process never connects directly to MongoDB and never accepts requests from the browser.
 
-## 1. One architecture boundary (not three extra public APIs)
+**Read the exact HTTP request/response contract in [PYTHON_HTTP_PROTOCOL.md](PYTHON_HTTP_PROTOCOL.md).** [Public browser ↔ Express routes](../../contracts/HTTP_API.md) are separate. [Shared persistence contract](../../database/PERSISTENCE_CONTRACT.md) covers storing model outputs. Use the [role map](../README.md) to assign reviewers.
 
-`Browser → Express controller (A middleware) → application service (B material processing / C quiz or result) → AiGateway (B-owned) → model SDK or protected Python sidecar → AiGateway normalized JSON → Express validate/domain rules → Database repositories → safe HTTP response to browser.`
+## 1. Boundary and sequence
 
-- **Default preference:** `AiGateway` is a Node interface imported by Express application services. The implementation may call a third-party hosted model through its SDK/HTTPS. **No separate public REST port for AI is required**.
-- **Alternative:** if Python/Whisper/legacy conversion requires its own runtime, implement a private local authenticated HTTP bridge behind the *same* `AiGateway` shape; only Express speaks to it, never React. Host/port, timeout, authentication, request/response schemas, limits and lifecycle must be explicitly approved before implementing a sidecar. The historical `legacy/AutoNote/` is **not** approved for direct import.
-- The AI module never reads browser sessions, decides privileges, writes Atlas collections, publishes private file paths, or finalizes grades. AI outputs are **untrusted input** even if schema-valid.
-
-## 2. Proposed common TypeScript-style interface (can be implemented in JavaScript)
-
-```ts
-interface AiGateway {
-  convertMaterial(input: {
-    materialId: string;
-    filename: string;
-    mimeType: string;
-    bytes: Uint8Array;        // trusted, size-bounded server-side bytes
-    requestId: string;
-  }): Promise<ConvertedContent>;
-
-  generateQuiz(input: {
-    materialId: string;
-    courseId: string;
-    content: ConvertedContent; // server-verified converted lecture
-    topicIds: string[];
-    questionCount: 10;
-    requestId: string;
-  }): Promise<GeneratedQuizDraft>;
-
-  generateFeedback(input: {
-    resultId: string;
-    score: number; total: number; // authoritative Express-computed values
-    missed: Array<{
-      snapshotQuestionId: string;
-      prompt: string;
-      chosenOptionText: string;
-      correctOptionText: string;
-      topicIds: string[];
-    }>;
-    requestId: string;
-  }): Promise<FeedbackDraft>;
-}
+```text
+React (public)
+  |
+  |  /api/** + session cookie / CSRF as appropriate
+  v
+Express (one public application server)
+  |-- authenticate / authorize Course & resource
+  |-- accept & store bounded material bytes (protected storage + Atlas)
+  |-- call private Python service on 127.0.0.1 via HTTP:
+  |     POST /internal/v1/convert          (multipart, server-owned source bytes)
+  |     POST /internal/v1/generate-quiz    (JSON, converted content)
+  |     POST /internal/v1/generate-feedback (JSON, graded Result context)
+  |  <-- structured JSON OR safe internal error
+  |-- verify DTO, resource ownership, question count, answer keys, source references
+  |-- persist material conversion, immutable Quiz/Attempt/Result (via DB repositories)
+  |-- strip correct answers from preview and secrets from all HTTP responses
+  v
+React (safe application response)
 ```
 
-`requestId` is diagnostic correlation, **not** proof of identity or idempotency. Do not place passwords, user emails, session tokens, raw file paths, or answer-key maps into model logs. The input `bytes` is provided by a protected server-side file adapter, never a client path. Review memory/size limits, especially for audio.
+- One **Node/Express** application server, one **Python AI sidecar** (recommended FastAPI/Uvicorn, subject to dependency review). Python is a private model adapter, **not a second public application backend**.
+- Python is bound to `127.0.0.1` only for local development; Express also authenticates its private requests with an injected internal service key (header specified in protocol). Neither model credentials nor internal shared key is sent to React. Cross-host production deployment requires private networking, TLS/service authentication, and a separate deployment review — localhost-only is not a production network model.
+- Express generates the `requestId` for correlation, enforces deadlines and size ceilings, and **never** trusts AI data as authorization, grading result, snapshot ID or database path.
+- Do not import `legacy/AutoNote/` into production code until a separate technical and credential security review. No direct Python-to-Atlas writes.
 
-## 3. Conversion: raw lecture → structured educational content
+## 2. Internal operations and outputs
 
-**Trigger owner:** Backend B's Material Service, after protected bytes and metadata have been accepted. Convert PDF/PPTX text or transcribe MP3/WAV; optionally structure lecture notes with AI. Deterministic extraction may precede the model, but the **Conversion capability** is model-integrated as requested by the team.
+### A. Conversion — source file → usable content
 
-**Proposed response:**
+**Caller:** Backend B Express Material Service **after** accepting real bytes and Atlas metadata. **Callee:** Backend B Python `POST /internal/v1/convert`; multipart part `file` plus metadata. Python may extract PDF/PPTX text or transcribe MP3/WAV and optionally structure notes. It returns a `ConvertedContent`, not a Material/Quiz ID.
 
 ```json
 {
-  "language":"en",
-  "plainText":"Functional requirements describe system behaviors...",
-  "sections":[{"sectionId":"s1","title":"Requirements","text":"Functional requirements ..."}],
-  "warnings":[]
+  "language": "en",
+  "plainText": "Functional requirements describe observable behaviors...",
+  "sections": [
+    {"sectionId": "s1", "title": "Requirements", "text": "Functional requirements ..."}
+  ],
+  "warnings": []
 }
 ```
 
-Express checks nonempty usable content, size/language/structure, source association and status, then stores *authorized* converted data. **Uploading file bytes is not proof of completed conversion**. Show Material `conversionStatus` such as `notStarted | processing | ready | failed`; approved state transitions and whether processing happens at upload or via `POST .../process` remain OPEN. Do not claim a background worker exists. Audio conversion may exceed a request timeout: choose bounded synchronous requests or an explicit queued design before coding.
+Express validates nonempty usable content, section boundaries and safe lengths, saves converted content linked to the original Material, then updates conversion status. **Real upload succeeded** and **conversion ready** are separate facts. Convert can fail while uploaded bytes remain valid. Trigger (explicit `process` endpoint vs after-upload) and bounded synchronous behavior must be frozen before implementation. The initial proposal uses explicit processing with bounded file size/duration, **no unimplemented queue or background job claim**.
 
-## 4. AI Quiz Generation: converted material → ten question candidates
+### B. Quiz generation — converted content → question candidates
 
-**Trigger owner:** Backend C's Quiz Service. It loads the authorized converted material and calls Backend B's `generateQuiz`. AI returns **candidates**, not persisted Quizzes, Attempts or Results.
+**Caller:** Backend C Express Quiz Service obtains authorized Material/`ConvertedContent`; calls Backend B Python `POST /internal/v1/generate-quiz` using a JSON body (never browser-supplied answer keys). Python returns **draft candidates**.
 
 ```json
 {
-  "questions":[
+  "questions": [
     {
-      "prompt":"Which behavior is a functional requirement?",
-      "options":[
-        {"optionId":"a","text":"The system allows file upload"},
-        {"optionId":"b","text":"Page loads in under two seconds"}
+      "prompt": "Which action is a functional requirement?",
+      "options": [
+        {"optionId": "a", "text": "Allow uploading a lecture file"},
+        {"optionId": "b", "text": "Load a page within two seconds"}
       ],
-      "correctOptionId":"a",
-      "explanation":"File upload is a functional behavior.",
-      "topicIds":["topic-1"],
-      "sourceRefs":[{"sectionId":"s1","quote":"The system allows file upload"}]
+      "correctOptionId": "a",
+      "explanation": "File upload is a required behavior.",
+      "topicIds": ["topic-1"],
+      "sourceRefs": [
+        {"sectionId": "s1", "quote": "Allow uploading a lecture file"}
+      ]
     }
   ]
 }
 ```
 
-The example shows **one item only** for readability. A successful regular Quiz requires **exactly 10 validated, distinct items**. Backend C validates schema, unique options/questions, correct key within options, approved Topics and source relevance; a sourceRefs string is a clue for review, **not proof of factual grounding**. Reject invalid/partial generation rather than quietly replacing it with unrelated bank questions; disclose actual model/source in internal provenance.
+This illustrates **one** candidate. The accepted regular Quiz must have **exactly ten validated distinct questions**. Express must reject invalid count, duplicate prompts/options, unknown topic IDs, bad answer keys, empty/irrelevant sources, malformed JSON or unsafe content. `sourceRefs` are supporting citations, **not automatic proof** that a model faithfully used the lecture. Validate traceability with fictional test lectures. On success Backend C assigns immutable snapshot IDs and persists private answer keys, and returns a preview with question text + option IDs/text **but no correct answer or explanation that reveals it**. **Generate creates Quiz only; Start creates Attempt.** No partial Quiz is stored on model failure.
 
-Backend C assigns stable question snapshot IDs and stores answer keys/explanations privately. The **browser preview** gets only `{snapshotQuestionId,prompt,options,topics}` — never `correctOptionId`, correct-answer rationale, prompt, or provider secrets. Generation returns persisted Quiz and **does not create an Attempt**; Start does.
+Original Phase 1 AD-03/AD-04 used a manually matched predefined Question Bank without semantic content extraction. The AI content-grounded mode here is a **new selected implementation direction**, not an unacknowledged equivalence. The old bank can remain a **test stub only**, with visibly distinct provenance and never masquerading as content AI.
 
-## 5. AI Feedback: graded Result → explanatory suggestions
+### C. Feedback — saved graded Result → explanation
 
-**Trigger owner:** Backend C's Result Service *after* validating answers, deterministic score computation and immutable Result persistence. Calls Backend B's `generateFeedback` with minimum required question text/choices, **without user identity or session data**.
+**Caller:** Backend C Express Result Service calculates score by comparing submitted answer option IDs against **stored correct snapshot keys**, persists one immutable Result, **then** calls Backend B Python `POST /internal/v1/generate-feedback`. Python receives minimal question content, wrong choices and correct choice text, with no student name/email/session.
 
 ```json
 {
-  "summary":"Review the difference between functional and non-functional requirements.",
-  "perQuestion":[{"snapshotQuestionId":"item-3","explanation":"A latency limit is a performance constraint, not a user action."}],
-  "suggestions":["Compare examples from section s1 of the lecture."]
+  "summary": "Review functional versus non-functional requirements.",
+  "perQuestion": [
+    {"snapshotQuestionId": "q3", "explanation": "Latency is a performance constraint."}
+  ],
+  "suggestions": ["Compare the two types in lecture section s1."]
 }
 ```
 
-**Separation:** AI produces explanations/suggestions, not the final score or which options are marked correct. If AI feedback times out/fails, the submitted score/answers/Result **remain valid and unchanged**. Proposed handling: separate `ResultFeedback` record/status (`pending / available / failed`), linked to Result and versioned; frontend can show “Score ready; AI explanation unavailable”. Do not mutate the immutable final Result to hide the failure. Whether to add `GET /api/results/:resultId/ai-feedback` or embed a safe separate feedback projection is OPEN. Basic correctness feedback required by M2 US-03 should still work without AI.
+AI **never assigns or changes score, correctness, attempts or the immutable Result**. If model feedback times out, the score/answer feedback required by Milestone 2 US-03 remains available. Proposed `ResultFeedback` record stores status `pending/available/failed` separately, with privacy and version controls. Browser retrieval of AI explanation is optional pending review of an explicit GET endpoint or safe projection. Avoid holding the original submit request open for a long model call; choose an explicit request/response lifecycle before shipping. **No asynchronous worker exists yet.**
 
-## 6. Error, timeout, safety and test contract
+## 3. Security and data handling
 
-- Shared error classes are **proposed**: `AI_UNAVAILABLE`, `CONVERSION_FAILED`, `AI_INVALID_OUTPUT`, `AI_TIMEOUT`, `AI_UNSAFE_CONTENT`. Express converts them to safe HTTP error/status under the [HTTP contract](../../contracts/HTTP_API.md); raw model errors, stack traces, keys and prompt data must not go to browser.
-- All outgoing model requests must have bounded timeouts, bounded input/output sizes, validation and cost/rate controls; do not automatically retry a possibly charged or non-idempotent model call without explicit policy. The Express operation ID controls **persistence idempotency**, not provider billing.
-- Treat uploaded lecture text as **untrusted prompt content**: ignore instructions embedded in the lecture that try to override system behavior or reveal keys. Use schema validation and server-side constraints; never trust generated JSON to grant roles, select another Course, or mark grade authoritative.
-- External provider transfer is subject to team/instructor-approved privacy and data-handling policy. Test first on **fictional lecture material**, not real class recordings or student answers. API keys are environment injected and never checked into Git.
-- Backend B supplies **fixture responses** for all 3 methods, including malformed JSON, nonempty/empty conversion, exactly 9/10/11 candidate counts, invalid correct option, irrelevant topic/source, provider timeout and network error. Backend C tests no partial Quiz/Result mutation, safe preview and grade preservation. DB tests stored versions/uniqueness and idempotent attempts.
-- Integration evidence: **Express → AI stub → Express validation/persistence → authorized HTTP response** first, then opt-in live provider smoke with redacted logs. The current frontend Demo service tests do **not** prove this path.
+- Model text and uploaded file bytes are untrusted. Ignore instructions embedded inside lecture content; constrain model capabilities to transformation, question and explanation outputs only. Schema checks are mandatory but **do not guarantee educational correctness**.
+- Express authenticates and checks User/Teacher/Course ownership; Python trusts only the authorized internal caller via a service credential and never accepts user-chosen resource IDs as proof of rights.
+- **Credentials:** provider API key only in Python environment; service-to-service key in both process environments (not source). Never log raw prompts, recordings, question keys, response bodies, tokens or local file paths. Do not commit real lecture media or private student submissions.
+- Review the model provider's privacy/data retention terms and obtain any required consent or instructor approval before transmitting real recordings, student answers or coursework. Use fictional demo fixtures for the first tests.
+- Internal HTTP errors map to stable, safe Express API errors. A Python `200` response does **not** authorize Express to commit without validation. Include explicit timeout, payload and content-type ceilings, safe redacted logs, health/readiness and shutdown behavior.
 
-## 7. Decision checklist to freeze before implementation
+## 4. Testing and ownership
 
-1. Node SDK direct integration versus private Python sidecar; approved model/provider for transcription/notes/quiz/feedback and key management.
-2. Conversion at upload versus explicit `process`; synchronous timeout versus queued status/lifecycle; accepted file sizes/types and sanitized output storage.
-3. Exactly ten quiz items, output JSON validation and human source-grounding review; model-output rejection/retry policy and immutable snapshot provenance.
-4. AI feedback timing, storage/GET shape, privacy policy and cost cap; grades remain deterministic regardless.
-5. Update/reconcile [AD-03](../../API_CONTRACT.md) and [AD-04](../../IMPLEMENTATION_PLAN.md) to record approved AI scope deviations. Do not label proposed interfaces production-ready.
+| Proof | Owner | Reviewer |
+| --- | --- | --- |
+| Python /internal routes validate service key, schema, size/type, and error responses | B | A |
+| Express calls stub Python over HTTP, receives and validates Conversion | B | Database |
+| Express calls stub Python over HTTP and persists **only ten valid** source-grounded Quiz candidates | C + B | Database + Frontend |
+| Safe public Quiz preview has no answer key / internal endpoint URL | C | Frontend |
+| Submit uses persisted snapshot to deterministically grade exactly once; AI outage does not change grade | C | Database |
+| Auth / course / cross-user guard on all public routes | A + affected API owner | Frontend |
+| Missing Python process, timeout, invalid JSON, invalid option key, 9/10/11 question counts, upload failure | A/B/C respective paths | Other Backend |
+
+Existing `client/tests` are Demo regression only, **not** proof of this integration.
+
+## 5. Decision register — confirmed vs open
+
+**Chosen:** Node/Express public app server → **private Python HTTP AI sidecar** → Express output validation/persistence → React response. **Not chosen:** browser-direct model calls, separate public Python backend or Python-to-Atlas persistence.
+
+**Review before affected code:** Python framework/dependencies (FastAPI recommended), private port and internal service key rotation; exact wire DTOs in [protocol](PYTHON_HTTP_PROTOCOL.md); file size/processing timeout/trigger; bounded synchronous versus explicit queued architecture; model provider/cost/data privacy; when and how optional AI feedback is retrieved. All remain proposal details, not claims of running code. Record approved deltas to older [AD-03](../../API_CONTRACT.md) and [AD-04](../../IMPLEMENTATION_PLAN.md) without removing their historical baseline.

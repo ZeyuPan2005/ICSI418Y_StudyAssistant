@@ -1,5 +1,7 @@
 # Frontend owner — read here
 
+**Network boundary:** React talks to Express `/api/*`, not Python AI or model providers. Never put `AI_INTERNAL_BASE_URL` or the internal service key in browser/Vite environment. Express owns model calls and validation.
+
 **Owner:** one React developer. **Selected stories:** US-01/02/03/05/06. Current `client/` is a functioning Demo; the Express backend does not yet exist.
 
 ## Read in order

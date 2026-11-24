@@ -1,5 +1,7 @@
 # Shared HTTP API agreement — current selected stories
 
+**Two separate HTTP boundaries:** This file documents **React → Express** only. Express calls a **private Python AI HTTP service** using the [internal wire protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md); Python is not a browser API. All Python outputs return to Express for validation and persistence.
+
 **Status:** PROPOSED v0.1 for all-five team freeze; routes are **not implemented**. **Scope:** US-01/02/03/05/06. This is the short **implementation-facing** subset of [AD-03 full Phase 1 API](../API_CONTRACT.md); it is not an automatic override of AD-03. Confirm any differences in a reviewed decision record before coding.
 
 ## Common conventions to approve
@@ -15,7 +17,8 @@
 
 | Owner | Method | Endpoint | Permission / purpose |
 | --- | --- | --- | --- |
-| A | GET / POST | `/api/auth/csrf` (GET), `/api/auth/register`, `/api/auth/login`, `/api/auth/logout` | CSRF, Student register, session login/logout |
+| A | GET | `/api/auth/csrf` | CSRF token bootstrap |
+| A | POST | `/api/auth/register`, `/api/auth/login`, `/api/auth/logout` | Student register, login/logout |
 | A | GET | `/api/auth/me`, `/api/courses`, `/api/courses/:courseId` | Session restore, assigned Course list/detail |
 | A | GET/POST | `/api/courses/:courseId/deadlines` | Student/Teacher reads; only assigned Teacher writes |
 | A | PATCH/DELETE | `/api/courses/:courseId/deadlines/:deadlineId` | Assigned Teacher only |
@@ -33,7 +36,7 @@
 | C | GET | `/api/attempts/:attemptId/result`, `/api/results/:resultId`, `/api/me/results` | Recover/read private results |
 | C (NEW optional) | GET | `/api/results/:resultId/ai-feedback` | Authorized explanation status/data; depends on agreed feedback lifecycle |
 
-There is **no browser → AI model** endpoint. Express authenticates, authorizes, validates, then calls the AI internal adapter through Backend B and handles its output itself.
+There is **no browser → AI model** endpoint. Express authenticates/authorizes, then calls the private Python service through the server-side AI client, validates its structured response, persists and returns the safe result.
 
 ## Mandatory boundary DTOs (example only)
 
@@ -54,7 +57,7 @@ There is **no browser → AI model** endpoint. Express authenticates, authorizes
 
 ## Explicit unresolved choices and contradictions
 
-1. **US-02 content grounding:** Original M2 requires questions based on the uploaded lecture; old AD-03 assumes predefined bank (not semantic content analysis). The current team intends real conversion + AI quiz: confirm model, data policy and output review. Modify AD-03/04 explicitly once accepted.
+1. **US-02 content grounding:** Original M2 requires questions based on the uploaded lecture; old AD-03 assumes predefined bank (not semantic content analysis). The selected path is Express → private Python conversion/quiz HTTP → Express validation/persistence; provider/privacy/source-grounding and output review still need sign-off. Modify AD-03/04 explicitly once accepted.
 2. **Processing trigger & latency:** upload-triggered vs explicit `process`; sync versus queued; what constitutes ready. Default endpoint above is a **proposal**, not a working route.
 3. **AI feedback lifecycle:** Result grade must survive AI timeout; choose separate versioned `ResultFeedback` or associated record rather than editing immutable Result. `ai-feedback` GET remains optional.
 4. **Contracts to freeze:** Session/CSRF/cookies, exact error codes, DTO fields, file limits/MIME, generation/upload idempotency, course zone, persistent unique IDs and indexes. Use [AI contract](../backend/ai/AI_MODEL_CONTRACT.md) and [Persistence contract](../database/PERSISTENCE_CONTRACT.md).

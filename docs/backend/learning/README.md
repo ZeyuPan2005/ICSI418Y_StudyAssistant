@@ -1,5 +1,7 @@
 # Backend C — Quiz / Attempt / Grading / Result
 
+**Transport choice:** Express Quiz/Result services call the separate private Python AI service via a shared server-side HTTP client; see the [wire protocol](../ai/PYTHON_HTTP_PROTOCOL.md). Build against a Python HTTP stub first.
+
 You own **learning-domain business state and HTTP routes**, not model integrations.
 
 **Read in order:**

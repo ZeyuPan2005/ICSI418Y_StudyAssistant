@@ -1,5 +1,7 @@
 # Backend A — Express / Auth / Course / Deadlines
 
+**Shared transport responsibility:** Configure Express-to-Python private HTTP base URL, internal service key, request timeouts and sanitized errors; do not expose Python paths through Vite or public routes. Use [private Python protocol](../ai/PYTHON_HTTP_PROTOCOL.md) with Backend B. Backend A does not write AI prompts or model logic.
+
 **Read in order:** [Backend coordination](../README.md) → [HTTP API](../../contracts/HTTP_API.md) → [AD-03 `4 Auth](../../API_CONTRACT.md#4-authentication-and-authorization-contract), [`5 Identity/Deadlines](../../API_CONTRACT.md#5-proposed-request-and-response-dto-examples), [`10 Errors](../../API_CONTRACT.md#10-unified-error-contract-proposed) → [AD-04 IMP-01, IMP-06A](../../IMPLEMENTATION_PLAN.md#4-small-future-codex-tasks).
 
 **Own:** Express bootstrap/config; runtime validation, health/proxy, session store, password/authentication, CSRF+Origin/cookie policies, role/Course membership middleware, trusted Teacher/Course provisioning support, Deadline CRUD and Upcoming date logic; shared safe error mapping.

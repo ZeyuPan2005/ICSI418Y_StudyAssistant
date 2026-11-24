@@ -65,11 +65,13 @@ AD04-D01 adopts incremental vertical slices. AD04-D02 preserves the Demo while i
 
 ## Development handoff by responsibility
 
+**Selected AI transport:** The public Express backend invokes a **private Python HTTP AI service** for conversion, quiz generation and feedback. Express validates the model results, persists them through repositories and returns safe data to React. [Python HTTP protocol](docs/backend/ai/PYTHON_HTTP_PROTOCOL.md) · [Decision register](docs/DECISIONS.md).
+
 **Start here: [docs/README.md](docs/README.md)**. It contains a short all-team reading sequence and separate, focused guides for [Frontend](docs/frontend/README.md), [Database](docs/database/README.md), [Backend A / Express](docs/backend/express/README.md), [Backend B / AI & Materials](docs/backend/ai/README.md), and [Backend C / Quiz & Grading](docs/backend/learning/README.md).
 
 The team's next selected stories are **US-01/02/03/05/06** (target 5 of 7 MVP stories, subject to acceptance evidence). The **proposed** [HTTP API agreement](docs/contracts/HTTP_API.md), [internal AI ↔ Express contract](docs/backend/ai/AI_MODEL_CONTRACT.md), and [persistence agreement](docs/database/PERSISTENCE_CONTRACT.md) specify work boundaries. **Express**, not the React browser, invokes AI conversion, quiz generation and feedback; Express validates/persists before returning safe data.
 
-**Design transition:** The earlier full Phase 1 plan deliberately relied on a predefined Question Bank. The current team is considering content-grounded AI generation for the selected stories; these contracts describe that desired design, but are **not yet team-approved or implemented**. Resolve it and review external-model privacy/credentials before live calls. `client/` currently remains Demo-only and `server/` remains unimplemented.
+**Design transition:** The earlier full Phase 1 plan deliberately relied on a predefined Question Bank. The team has selected **Express → private Python AI HTTP → Express validation and persistence** for the intended content-grounded generation path. The specific wire DTOs/provider/privacy/limits require team review; **neither Python nor Express integration has been implemented yet**. Resolve it and review external-model privacy/credentials before live calls. `client/` currently remains Demo-only and `server/` remains unimplemented.
 
 ## Working as a team
 
