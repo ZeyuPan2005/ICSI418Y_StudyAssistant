@@ -1,11 +1,11 @@
 # Requirements Traceability
 
-> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](DECISIONS.md), [private AI protocol](backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
+> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](../team/DECISIONS.md), [private AI protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](../contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
 
 **Baseline:** [Requirements Baseline v1.2](REQUIREMENTS_BASELINE.md)
 **Status:** Prepared for Review; traces confirmed working requirements without approving architecture proposals
 **Reviewed:** 2026-11-17; v1.0 evidence was inspected at `5833fc5`, with Task 3 decision implications reviewed against `e310d1b`. M2 provenance is unchanged; Task 4 also inspected original M2/M3 and records the comparison in AD-02.
-**Revision:** v1.2 preserves AD01-D01/D02/D05/D09 and records AD02-D01 through AD02-D06; [AD-01](COMPONENT_ARCHITECTURE.md) and [AD-02](DATA_MODEL.md) remain Prepared for Review.
+**Revision:** v1.2 preserves AD01-D01/D02/D05/D09 and records AD02-D01 through AD02-D06; [AD-01](../design/COMPONENT_ARCHITECTURE.md) and [AD-02](../design/DATA_MODEL.md) remain Prepared for Review.
 
 ## Reading the matrix
 
@@ -72,8 +72,8 @@ supporting work. Authentication UI and API designs belong to later AD tasks.
 
 ## Existing evidence and remaining implementation gap
 
-The existing [Node service tests](../client/tests/services.test.js) and
-[Playwright browser tests](../client/tests/browser.mjs) remain unchanged. The following references
+The existing [Node service tests](../../client/tests/services.test.js) and
+[Playwright browser tests](../../client/tests/browser.mjs) remain unchanged. The following references
 identify inspectable cases, not future backend test files.
 
 | Area | Existing evidence | Gap to Phase 1 acceptance |
@@ -108,13 +108,13 @@ The matrix contains **5 unique original UCs**, **7 original USs**, **7 Phase 1 F
 All **14 proposed ACs** and **6 proposed NFV procedures** have a requirement connection.
 
 When requirements change, update the baseline first, then these links and the relevant
-[architecture work package](ARCHITECTURE_PLAN.md#architecture-work-packages). Do not mark
+[architecture work package](../archive/ARCHITECTURE_PLAN.md#architecture-work-packages). Do not mark
 an acceptance test passed solely because its prototype equivalent passes. Record the
 implementation revision, test environment and actual results when backend tests exist.
 
 ## AD-01 component handoff
 
-The [requirements-to-components mapping](COMPONENT_ARCHITECTURE.md#14-requirements-and-verification-traceability)
+The [requirements-to-components mapping](../design/COMPONENT_ARCHITECTURE.md#14-requirements-and-verification-traceability)
 assigns each FR to a primary domain owner and collaborators. The component responsibility
 matrix distinguishes Quiz creation, Attempt/Result ownership, material/file coordination,
 deadline writes and read-only Teacher queries. AD-02/AD-03 must preserve these invariants
@@ -127,9 +127,9 @@ baseline revision and awaits documentation review without broader formal approva
 
 ## AD-02 data-model handoff
 
-The [data-model traceability](DATA_MODEL.md#13-requirements-traceability) maps all ten entities
+The [data-model traceability](../design/DATA_MODEL.md#13-requirements-traceability) maps all ten entities
 and persistence invariants to FR-01 through FR-07, all original UC/US/NFR IDs and AC-01
-through AC-14. Its [milestone audit](DATA_MODEL.md#2-milestone-consistency-and-design-evolution)
+through AC-14. Its [milestone audit](../design/DATA_MODEL.md#2-milestone-consistency-and-design-evolution)
 discloses the M3 latest-score-only retake policy change and file-derived Concept/manual
 Topic limitation, while preserving calculated Alerts and assigned-Teacher review.
 Practice uses its own Quiz, Attempt and Result after submission, linked to the unchanged

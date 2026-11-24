@@ -1,6 +1,6 @@
 # AD-03 API Contract
 
-> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](DECISIONS.md), [private AI protocol](backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
+> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](../team/DECISIONS.md), [private AI protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](../contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
 
 | Document control | Value |
 | --- | --- |
@@ -8,7 +8,7 @@
 | Date | 2026-11-18 |
 | Status | **Prepared for Review** |
 | Scope | Phase 1 HTTP contracts; documentation/design only, no API implementation |
-| Foundation | [Requirements Baseline v1.2](REQUIREMENTS_BASELINE.md), [traceability](REQUIREMENTS_TRACEABILITY.md), [AD-01](COMPONENT_ARCHITECTURE.md), [AD-02](DATA_MODEL.md), [architecture plan](ARCHITECTURE_PLAN.md), [README](../README.md) |
+| Foundation | [Requirements Baseline v1.2](../requirements/REQUIREMENTS_BASELINE.md), [traceability](../requirements/REQUIREMENTS_TRACEABILITY.md), [AD-01](COMPONENT_ARCHITECTURE.md), [AD-02](DATA_MODEL.md), [architecture plan](../archive/ARCHITECTURE_PLAN.md), [README](../../README.md) |
 | Repository reference | `main`, `8fbb43e` (AD-01/AD-02 documentation commit) |
 | Authority | Task 6 explicitly confirms AD03-D01 through AD03-D10 below. Endpoint names, DTOs, headers and status/error selections are proposals for review. No formal team approval or implementation completion is asserted. |
 
@@ -533,7 +533,7 @@ operation/resource. Error names do not prove database rollback or file compensat
 ## 11. Requirements, components and data traceability
 
 All acceptance/verifications below are proposed future checks, not executed backend tests.
-Original [traceability](REQUIREMENTS_TRACEABILITY.md) retains all UC/US/UI IDs and conditions.
+Original [traceability](../requirements/REQUIREMENTS_TRACEABILITY.md) retains all UC/US/UI IDs and conditions.
 
 | FR / original use cases and stories | Contract coverage | AD-01 owners / AD-02 data | Acceptance |
 | --- | --- | --- | --- |

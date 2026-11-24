@@ -5,9 +5,9 @@
 **Owner:** one Atlas/persistence developer. All five selected stories need durable data; you own the shared storage boundary, not individual HTTP routes.
 
 ## Read in order
-1. [Team responsibilities](../TEAM_ASSIGNMENTS.md) + [acceptance](../ACCEPTANCE_MATRIX.md).
+1. [Team responsibilities](../team/TEAM_ASSIGNMENTS.md) + [acceptance](../requirements/ACCEPTANCE_MATRIX.md).
 2. [Persistence contract](PERSISTENCE_CONTRACT.md) — method ownership, uniqueness, isolation, stored file references and AI artifacts.
-3. [AD-02 Data Model `3](../DATA_MODEL.md#3-logical-entities-and-proposed-fields), [`5](../DATA_MODEL.md#5-proposed-mongodb-storage-design) and [`8](../DATA_MODEL.md#8-proposed-attempt-and-result-lifecycle).
+3. [AD-02 Data Model Section 3](../design/DATA_MODEL.md#3-logical-entities-and-proposed-fields), [Section 5](../design/DATA_MODEL.md#5-proposed-mongodb-storage-design) and [Section 8](../design/DATA_MODEL.md#8-proposed-attempt-and-result-lifecycle).
 4. [HTTP API DTOs](../contracts/HTTP_API.md), [AI internal outputs](../backend/ai/AI_MODEL_CONTRACT.md).
 
 ## Your delivery

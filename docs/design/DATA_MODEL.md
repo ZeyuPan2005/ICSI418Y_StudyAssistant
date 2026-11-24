@@ -1,6 +1,6 @@
 # AD-02 Data Model
 
-> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](DECISIONS.md), [private AI protocol](backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
+> **Architecture handoff update (2026-11-24):** The team selected **Express → private Python AI HTTP service → Express validation/persistence** for planned US-01/02/03/05/06 delivery. This document preserves the earlier complete Phase 1 design and predefined Question Bank assumptions. The new [decision log](../team/DECISIONS.md), [private AI protocol](../backend/ai/PYTHON_HTTP_PROTOCOL.md) and [team API contract](../contracts/HTTP_API.md) show proposed differences. Reconcile and approve changed requirements/contracts before implementation; no Express/Python/Atlas runtime integration is claimed.
 
 | Document control | Value |
 | --- | --- |
@@ -8,7 +8,7 @@
 | Date | 2026-11-17 |
 | Status | **Prepared for Review** |
 | Scope | Study Assistant Phase 1 logical model and proposed MongoDB/local-file persistence design; documentation only |
-| Requirements authority | [Requirements Baseline v1.2](REQUIREMENTS_BASELINE.md), original M2 requirements, and explicitly confirmed Task 3/Task 4 decisions |
+| Requirements authority | [Requirements Baseline v1.2](../requirements/REQUIREMENTS_BASELINE.md), original M2 requirements, and explicitly confirmed Task 3/Task 4 decisions |
 | Architecture reference | [AD-01 Component Architecture](COMPONENT_ARCHITECTURE.md); module boundaries remain design proposals |
 | Repository inspected | `e310d1b` plus existing uncommitted AD-01 documentation, preserved by this revision |
 | Approval boundary | Confirmed requirements constrain the design. Fields, collections, indexes, state names, algorithms and transaction protocols below are proposals, not implemented or formally team-approved. |
@@ -31,9 +31,9 @@ also visually inspected for the context/Level 0/Level 1 DFDs and conceptual ERD.
 | --- | --- |
 | `Project/Milestone/2/Team01- Milestone 2- Report.pdf` (5 pages) | Original requirements: actors and US-01 through US-07, pp. 1-2; UC-01 through UC-05, pp. 2-4; original NFR-01 through NFR-06, p. 4. SHA-256: `7b86a241c5bb7f5b33a84973f82d9b4f438071e1c1eab73fbaba3516c12d0070`. |
 | `Project/Milestone/3/Team1-Milestone_3-Report.pdf` (11 pages) | Submitted design: DFDs pp. 2-3; ERD p. 3; business rules p. 4; UI workflows pp. 4-10; consistency table pp. 10-11. SHA-256: `29cc4abc75b6bbbf645b3ecea67bc6a0f855d3d571ec7a002af9ed65826a1970`. |
-| [Baseline](REQUIREMENTS_BASELINE.md), [traceability](REQUIREMENTS_TRACEABILITY.md), [architecture plan](ARCHITECTURE_PLAN.md), [AD-01](COMPONENT_ARCHITECTURE.md) | Current phased scope, acceptance criteria, responsibilities and explicitly confirmed decisions. Neither architecture document implies formal approval of its proposals. |
+| [Baseline](../requirements/REQUIREMENTS_BASELINE.md), [traceability](../requirements/REQUIREMENTS_TRACEABILITY.md), [architecture plan](../archive/ARCHITECTURE_PLAN.md), [AD-01](COMPONENT_ARCHITECTURE.md) | Current phased scope, acceptance criteria, responsibilities and explicitly confirmed decisions. Neither architecture document implies formal approval of its proposals. |
 | Historical Milestone 3 assumptions, archive, UI mapping and Phase A plan (held in the team's local archive) | Original prototype and milestone-design context, not current implementation authority. |
-| [Mock services](../client/src/services/demo.js), [fixtures](../client/src/data/fixtures.js), [service tests](../client/tests/services.test.js), [browser tests](../client/tests/browser.mjs), [README](../README.md), [AutoNote review](AUTONOTE_IMPORT_REVIEW.md) | Inspected for current behavior and limitations. Browser-local state, fixture grading and simulated failures are not evidence of backend persistence or NFR compliance. AutoNote remains optional and unintegrated. |
+| [Mock services](../../client/src/services/demo.js), [fixtures](../../client/src/data/fixtures.js), [service tests](../../client/tests/services.test.js), [browser tests](../../client/tests/browser.mjs), [README](../../README.md), [AutoNote review](../archive/AUTONOTE_IMPORT_REVIEW.md) | Inspected for current behavior and limitations. Browser-local state, fixture grading and simulated failures are not evidence of backend persistence or NFR compliance. AutoNote remains optional and unintegrated. |
 
 The reports are not copied into the repository. Shared authoritative report access remains
 Q-09. **Confirmed** below means explicitly supplied by the user, not inferred from an ERD,
@@ -643,7 +643,7 @@ indexes alone do not prove NFR-02.
 
 ## 13. Requirements traceability
 
-The [baseline](REQUIREMENTS_BASELINE.md) defines requirements; [traceability](REQUIREMENTS_TRACEABILITY.md)
+The [baseline](../requirements/REQUIREMENTS_BASELINE.md) defines requirements; [traceability](../requirements/REQUIREMENTS_TRACEABILITY.md)
 retains original screens and proposed tests. These are design mappings, not test results.
 
 | Phase 1 requirement | Original scope | Data responsibilities | Relevant acceptance |
